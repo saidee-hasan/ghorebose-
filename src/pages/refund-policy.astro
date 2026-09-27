@@ -1,0 +1,79 @@
+---
+import ContentPage from "@/layouts/ContentPage.astro";
+import Prose from "@/components/ui/Prose.astro";
+import Button from "@/components/ui/Button.astro";
+
+const updated = "1 September 2026";
+---
+
+<ContentPage
+  title="Refund Policy"
+  description="When refunds apply on ghorebose.com, how to request one, and how long they take."
+  crumb="Refund Policy"
+  updated={updated}
+>
+  <Prose>
+    <p>
+      We want every purchase on ghorebose.com to be safe. If something goes
+      wrong with your order, this policy explains exactly when you are entitled
+      to a refund and how to get one.
+    </p>
+
+    <h2>Full refunds</h2>
+    <p>You receive a full refund, with no questions asked, when:</p>
+    <ul>
+      <li>We cannot verify your payment.</li>
+      <li>We cannot deliver the tool you purchased.</li>
+      <li>The delivered access does not work and cannot be replaced within 48 hours.</li>
+      <li>You cancel before your payment is verified and access has not been delivered.</li>
+    </ul>
+
+    <h2>Partial refunds</h2>
+    <p>
+      If access was delivered and worked for part of the subscription period but
+      failed partway through, we may offer a partial refund proportional to the
+      unused time, at our discretion and where the failure is our responsibility.
+    </p>
+
+    <h2>What is not refundable</h2>
+    <ul>
+      <li>Access that has been delivered and used successfully for more than 48 hours.</li>
+      <li>Accounts blocked because you violated the tool's terms of service.</li>
+      <li>Change of mind after access has been delivered and verified as working.</li>
+      <li>Orders where a false or reused transaction ID was submitted.</li>
+    </ul>
+
+    <h2>How to request a refund</h2>
+    <ol>
+      <li>Open the order from <a href="/dashboard/orders">My Orders</a>.</li>
+      <li>Click <strong>Request refund</strong> and describe the issue.</li>
+      <li>Our team reviews the request within 24 hours.</li>
+      <li>Approved refunds are sent to the payment number you paid from.</li>
+    </ol>
+
+    <h2>Refund timeline</h2>
+    <p>
+      Once approved, refunds are processed within 1–3 business days. bKash,
+      Nagad and Rocket refunds usually arrive the same day they are processed.
+    </p>
+
+    <h2>Contact</h2>
+    <p>
+      Not sure if you qualify? <a href="/contact">Contact support</a> with your
+      Order ID and we will help you find the fastest resolution.
+    </p>
+  </Prose>
+
+  <div class="mt-10 rounded-[16px] border border-line bg-surface-subtle p-6">
+    <h2 class="font-display text-base font-bold text-ink">Need help with an order?</h2>
+    <p class="mt-1 text-sm text-muted">
+      Our support team can check the status of your refund or payment.
+    </p>
+    <div class="mt-4 flex flex-wrap gap-3">
+      <Button href="/contact" icon="message-square">Contact support</Button>
+      <Button href="/dashboard/orders" variant="outline" icon="package">
+        View my orders
+      </Button>
+    </div>
+  </div>
+</ContentPage>

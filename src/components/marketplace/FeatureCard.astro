@@ -1,0 +1,29 @@
+---
+import Icon from "@/components/ui/Icon.astro";
+
+interface Props {
+  icon: string;
+  title: string;
+  description: string;
+  class?: string;
+}
+
+const { icon, title, description, class: className = "" } = Astro.props;
+---
+
+<div
+  class:list={[
+    "flex flex-col rounded-[16px] border border-line bg-white p-6 shadow-xs transition-shadow duration-200 hover:shadow-sm",
+    className,
+  ]}
+>
+  <span
+    class="inline-flex h-12 w-12 items-center justify-center rounded-[12px] border border-line bg-surface-subtle text-accent"
+  >
+    <Icon name={icon} size={22} />
+  </span>
+  <h3 class="mt-4 font-display text-base font-bold tracking-tight text-ink">
+    {title}
+  </h3>
+  <p class="mt-2 text-sm leading-relaxed text-muted">{description}</p>
+</div>

@@ -1,0 +1,21 @@
+---
+import DashboardLayout from "@/layouts/DashboardLayout.astro";
+import OrdersList from "@/components/dashboard/OrdersList";
+import Button from "@/components/ui/Button.astro";
+import { getUserOrders } from "@/data/orders";
+
+const orders = getUserOrders();
+---
+
+<DashboardLayout
+  title="My Orders"
+  active="orders"
+  heading="My Orders"
+  description="Track every order from payment submission through to delivery."
+>
+  <Fragment slot="actions">
+    <Button href="/tools" variant="outline" icon="search">Find more tools</Button>
+  </Fragment>
+
+  <OrdersList client:load orders={orders as any} />
+</DashboardLayout>

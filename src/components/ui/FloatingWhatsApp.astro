@@ -1,0 +1,63 @@
+---
+import Icon from "@/components/ui/Icon.astro";
+
+interface Props {
+  phoneNumber?: string;
+  defaultMessage?: string;
+}
+
+const {
+  phoneNumber = "8801712345678",
+  defaultMessage = "আসসালামু আলাইকুম! ghorebose.com থেকে এআই টুলস কিনতে চাচ্ছি। একটু বিস্তারিত জানাবেন?",
+} = Astro.props;
+
+const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(defaultMessage)}`;
+---
+
+<div class="fixed bottom-6 right-6 z-30 flex items-center gap-3">
+  <!-- Tooltip Bubble for BD users -->
+  <a
+    href={whatsappUrl}
+    target="_blank"
+    rel="noopener noreferrer"
+    class="group hidden sm:flex items-center gap-2 rounded-full bg-white px-4 py-2 text-xs font-semibold text-ink shadow-lg ring-1 ring-line transition-all duration-300 hover:shadow-xl hover:ring-brand-500"
+    aria-label="Chat on WhatsApp in Bangla"
+  >
+    <span class="flex h-2 w-2 relative">
+      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+      <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+    </span>
+    <span class="text-ink font-bangla font-medium">বাংলায় দ্রুত সাপোর্ট পান</span>
+    <span class="text-muted group-hover:text-emerald-600 transition-colors">WhatsApp</span>
+  </a>
+
+  <!-- WhatsApp Round Floating Button -->
+  <a
+    href={whatsappUrl}
+    target="_blank"
+    rel="noopener noreferrer"
+    class="relative flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-lg transition-transform duration-300 hover:scale-110 hover:shadow-emerald-500/30 focus-ring"
+    aria-label="Direct WhatsApp Contact"
+    title="WhatsApp এ সরাসরি মেসেজ দিন"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="30"
+      height="30"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      class="text-white"
+    >
+      <path d="M3 21l1.65-3.8a9 9 0 1 1 3.4 2.9L3 21" />
+      <path d="M9 10a.5.5 0 0 0 1 0V9a.5.5 0 0 0-1 0v1a5 5 0 0 0 5 5h1a.5.5 0 0 0 0-1h-1a.5.5 0 0 0 0 1" />
+    </svg>
+    <span class="absolute -top-1 -right-1 flex h-4 w-4">
+      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+      <span class="relative inline-flex rounded-full h-4 w-4 bg-amber-500 text-[9px] font-extrabold text-white items-center justify-center">1</span>
+    </span>
+  </a>
+</div>

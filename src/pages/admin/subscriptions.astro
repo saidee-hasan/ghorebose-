@@ -1,0 +1,76 @@
+---
+import AdminLayout from "@/layouts/AdminLayout.astro";
+import StatCard from "@/components/dashboard/StatCard.astro";
+import StatusBadge from "@/components/ui/StatusBadge.astro";
+import Button from "@/components/ui/Button.astro";
+import { getPurchasedOrders } from "@/data/orders";
+import { formatBDT, formatDate, daysUntil } from "@/lib/format";
+
+const subs = getPurchasedOrders();
+const expiring = subs.filter((o) => daysUntil(o.expiresAt) <= 7 && daysUntil(o.expiresAt) > 0);
+const stats = [
+  { label: "Active subscriptions", value: String(subs.length), icon: "refresh", accent: true },
+  { label: "Expiring in 7 days", value: String(expiring.length), icon: "clock" },
+  { label: "Monthly recurring", value: formatBDT(subs.reduce((s, o) => s + o.amount, 0)), icon: "dollar" },
+  { label: "Renewal rate", value: "92%", icon: "trending-up" },
+];
+---
+
+<AdminLayout
+  title="Subscriptions"
+  active="subscriptions"
+  heading="Subscriptions"
+  description="Track active subscriptions, renewals and churn risk."
+>
+  <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+    {stats.map((s) => <StatCard {...s} />)}
+  </div>
+
+  <div class="mt-6 overflow-hidden rounded-[16px] border border-line bg-white shadow-xs">
+    <div class="overflow-x-auto">
+      <table class="w-full min-w-[820px] text-left text-sm">
+        <thead>
+          <tr class="border-b border-line bg-surface-subtle text-[11px] font-bold uppercase tracking-[0.08em] text-muted">
+            <th class="px-5 py-3.5">Customer</th>
+            <th class="px-5 py-3.5">Tool</th>
+            <th class="px-5 py-3.5">Plan</th>
+            <th class="px-5 py-3.5">Amount</th>
+            <th class="px-5 py-3.5">Started</th>
+            <th class="px-5 py-3.5">Expires</th>
+            <th class="px-5 py-3.5">Status</th>
+            <th class="px-5 py-3.5 text-right">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-line">
+          {
+            subs.map((o) => {
+              const remaining = daysUntil(o.expiresAt);
+              return (
+                <tr class="transition-colors hover:bg-surface-subtle">
+                  <td class="px-5 py-4 font-semibold text-ink">{o.customer}</td>
+                  <td class="px-5 py-4 font-medium text-ink">{o.toolName}</td>
+                  <td class="px-5 py-4 text-muted">{o.plan}</td>
+                  <td class="px-5 py-4 font-semibold text-ink">{formatBDT(o.amount)}</td>
+                  <td class="px-5 py-4 text-muted">{formatDate(o.createdAt)}</td>
+                  <td class="px-5 py-4 text-muted">{formatDate(o.expiresAt)}</td>
+                  <td class="px-5 py-4">
+                    {remaining <= 7 && remaining > 0 ? (
+                      <span class="inline-flex items-center gap-1.5 rounded-full border border-brand-200 bg-brand-50 px-2.5 py-0.5 text-[11px] font-bold text-brand-700">
+                        Expiring · {remaining}d
+                      </span>
+                    ) : (
+                      <StatusBadge type="payment" status="delivered" />
+                    )}
+                  </td>
+                  <td class="px-5 py-4 text-right">
+                    <Button href="#" variant="outline" size="sm">Renew</Button>
+                  </td>
+                </tr>
+              );
+            })
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</AdminLayout>

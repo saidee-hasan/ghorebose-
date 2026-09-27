@@ -1,0 +1,116 @@
+---
+import DashboardLayout from "@/layouts/DashboardLayout.astro";
+import Toggle from "@/components/ui/Toggle.astro";
+import Select from "@/components/ui/Select.astro";
+import Button from "@/components/ui/Button.astro";
+import Icon from "@/components/ui/Icon.astro";
+
+const notifications = [
+  { name: "orderUpdates", label: "Order updates", description: "Payment verified, access delivered and status changes.", checked: true },
+  { name: "renewalReminders", label: "Renewal reminders", description: "Reminders before a subscription expires.", checked: true },
+  { name: "productNews", label: "Product news", description: "New tools, features and marketplace announcements.", checked: false },
+  { name: "promotions", label: "Promotions & coupons", description: "Discounts and limited-time offers.", checked: true },
+];
+
+const security = [
+  { name: "twoFactor", label: "Two-factor authentication", description: "Add an extra layer of security to your account.", checked: false },
+  { name: "loginAlerts", label: "Login alerts", description: "Get notified of new sign-ins from unknown devices.", checked: true },
+];
+---
+
+<DashboardLayout
+  title="Settings"
+  active="settings"
+  heading="Settings"
+  description="Manage notifications, preferences and account security."
+>
+  <div class="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
+    <div class="space-y-6">
+      <section class="rounded-[16px] border border-line bg-white p-5 shadow-xs sm:p-6">
+        <h2 class="font-display text-base font-bold text-ink">Notifications</h2>
+        <p class="mt-1 text-sm text-muted">Choose what we email you about.</p>
+        <div class="mt-5 space-y-3">
+          {notifications.map((n) => <Toggle {...n} />)}
+        </div>
+      </section>
+
+      <section class="rounded-[16px] border border-line bg-white p-5 shadow-xs sm:p-6">
+        <h2 class="font-display text-base font-bold text-ink">Preferences</h2>
+        <div class="mt-5 grid gap-5 sm:grid-cols-2">
+          <Select
+            label="Language"
+            name="language"
+            value="en"
+            options={[
+              { value: "en", label: "English" },
+              { value: "bn", label: "বাংলা (Bangla)" },
+            ]}
+          />
+          <Select
+            label="Currency"
+            name="currency"
+            value="bdt"
+            options={[
+              { value: "bdt", label: "BDT (৳)" },
+              { value: "usd", label: "USD ($)" },
+            ]}
+          />
+        </div>
+      </section>
+
+      <section class="rounded-[16px] border border-line bg-white p-5 shadow-xs sm:p-6">
+        <h2 class="font-display text-base font-bold text-ink">Security</h2>
+        <div class="mt-5 space-y-3">
+          {security.map((s) => <Toggle {...s} />)}
+        </div>
+        <div class="mt-5 flex flex-wrap gap-3 border-t border-line pt-5">
+          <Button href="/reset-password" variant="outline" size="sm" icon="lock">
+            Change password
+          </Button>
+          <Button href="#" variant="ghost" size="sm" icon="logout">
+            Sign out of all devices
+          </Button>
+        </div>
+      </section>
+
+      <section class="rounded-[16px] border border-line bg-white p-5 shadow-xs sm:p-6">
+        <h2 class="font-display text-base font-bold text-ink">Danger zone</h2>
+        <p class="mt-1 text-sm text-muted">
+          These actions are permanent and cannot be undone.
+        </p>
+        <div class="mt-5 space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-3 rounded-[12px] border border-line p-4">
+            <div>
+              <p class="text-sm font-semibold text-ink">Deactivate account</p>
+              <p class="mt-0.5 text-[13px] text-muted">
+                Temporarily disable your account. You can reactivate later.
+              </p>
+            </div>
+            <Button href="#" variant="outline" size="sm">Deactivate</Button>
+          </div>
+          <div class="flex flex-wrap items-center justify-between gap-3 rounded-[12px] border border-line p-4">
+            <div>
+              <p class="text-sm font-semibold text-ink">Delete account</p>
+              <p class="mt-0.5 text-[13px] text-muted">
+                Permanently delete your account and all associated data.
+              </p>
+            </div>
+            <Button href="#" variant="outline" size="sm" icon="trash">Delete</Button>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <aside class="space-y-4">
+      <div class="rounded-[16px] border border-line bg-surface-subtle p-5">
+        <div class="flex items-start gap-3">
+          <Icon name="info" size={18} class="mt-0.5 shrink-0 text-muted" />
+          <p class="text-[13px] leading-relaxed text-muted">
+            Notification emails are sent to your registered address. You can
+            change it from the Profile page.
+          </p>
+        </div>
+      </div>
+    </aside>
+  </div>
+</DashboardLayout>

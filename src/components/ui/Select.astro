@@ -1,0 +1,78 @@
+---
+interface Option {
+  value: string;
+  label: string;
+}
+
+interface Props {
+  label?: string;
+  name: string;
+  options: Option[];
+  value?: string;
+  hint?: string;
+  id?: string;
+  class?: string;
+  disabled?: boolean;
+  placeholder?: string;
+}
+
+const {
+  label,
+  name,
+  options,
+  value,
+  hint,
+  id,
+  class: className = "",
+  disabled = false,
+  placeholder,
+} = Astro.props;
+
+const fieldId = id ?? name;
+const cls = [
+  "w-full h-12 rounded-[10px] border border-line bg-white px-4 pr-10 text-sm text-ink",
+  "appearance-none transition-colors duration-150 hover:border-line-strong focus:border-accent focus-ring",
+  disabled ? "bg-surface-muted text-muted cursor-not-allowed" : "",
+  className,
+]
+  .filter(Boolean)
+  .join(" ");
+---
+
+<div class="w-full">
+  {
+    label && (
+      <label
+        for={fieldId}
+        class="mb-1.5 block text-[13px] font-semibold text-ink"
+      >
+        {label}
+      </label>
+    )
+  }
+  <div class="relative">
+    <select id={fieldId} name={name} disabled={disabled} class={cls}>
+      {placeholder && <option value="">{placeholder}</option>}
+      {
+        options.map((o) => (
+          <option value={o.value} selected={o.value === value}>
+            {o.label}
+          </option>
+        ))
+      }
+    </select>
+    <svg
+      class="pointer-events-none absolute right-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.75"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      aria-hidden="true"
+    >
+      <path d="m6 9 6 6 6-6"></path>
+    </svg>
+  </div>
+  {hint && <p class="mt-1.5 text-xs text-muted">{hint}</p>}
+</div>

@@ -1,0 +1,114 @@
+---
+import StatusBadge from "@/components/ui/StatusBadge.astro";
+import Icon from "@/components/ui/Icon.astro";
+import { formatDate, formatBDT } from "@/lib/format";
+import type { Order } from "@/lib/types";
+import { getTool } from "@/data/tools";
+
+interface Props {
+  orders: Order[];
+  variant?: "user" | "admin";
+  class?: string;
+}
+
+const { orders, variant = "user", class: className = "" } = Astro.props;
+---
+
+<div
+  class:list={[
+    "overflow-hidden rounded-[16px] border border-line bg-white shadow-xs",
+    className,
+  ]}
+>
+  <div class="overflow-x-auto">
+    <table class="w-full min-w-[720px] text-left text-sm">
+      <thead>
+        <tr class="border-b border-line bg-surface-subtle text-[11px] font-bold uppercase tracking-[0.08em] text-muted">
+          <th class="px-5 py-3.5">Order ID</th>
+          {variant === "admin" && <th class="px-5 py-3.5">Customer</th>}
+          <th class="px-5 py-3.5">Tool</th>
+          <th class="px-5 py-3.5">Amount</th>
+          <th class="px-5 py-3.5">Date</th>
+          {variant === "admin" && <th class="px-5 py-3.5">Payment</th>}
+          <th class="px-5 py-3.5">Status</th>
+          <th class="px-5 py-3.5 text-right">Action</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-line">
+        {
+          orders.map((o) => {
+            const tool = getTool(o.toolSlug);
+            return (
+              <tr class="transition-colors hover:bg-surface-subtle">
+                <td class="px-5 py-4">
+                  <span class="font-mono text-[13px] font-semibold text-ink">
+                    {o.id}
+                  </span>
+                </td>
+                {variant === "admin" && (
+                  <td class="px-5 py-4">
+                    <p class="font-semibold text-ink">{o.customer}</p>
+                    <p class="text-xs text-muted">{o.email}</p>
+                  </td>
+                )}
+                <td class="px-5 py-4">
+                  <div class="flex items-center gap-2.5">
+                    <span
+                      class:list={[
+                        "inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-[9px] text-[10px] font-extrabold",
+                        tool?.tone === "brand"
+                          ? "bg-accent text-white"
+                          : tool?.tone === "outline"
+                            ? "border border-line-strong bg-white text-ink"
+                            : "bg-ink text-white",
+                      ]}
+                    >
+                      {tool?.mark ?? "AI"}
+                    </span>
+                    <div class="min-w-0">
+                      <p class="truncate font-semibold text-ink">{o.toolName}</p>
+                      <p class="text-xs text-muted">{o.plan}</p>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-5 py-4 font-semibold text-ink">
+                  {formatBDT(o.amount)}
+                </td>
+                <td class="px-5 py-4 text-muted">{formatDate(o.createdAt)}</td>
+                {variant === "admin" && (
+                  <td class="px-5 py-4">
+                    <p class="font-medium text-ink">{o.method}</p>
+                    <p class="font-mono text-xs text-muted">{o.trxId}</p>
+                  </td>
+                )}
+                <td class="px-5 py-4">
+                  <StatusBadge type="order" status={o.status} />
+                </td>
+                <td class="px-5 py-4">
+                  <div class="flex items-center justify-end gap-1">
+                    <a
+                      href={`/dashboard/orders/${o.id}`}
+                      class="inline-flex h-8 items-center gap-1.5 rounded-[8px] border border-line px-2.5 text-xs font-semibold text-ink transition-colors hover:bg-surface-subtle"
+                    >
+                      <Icon name="eye" size={14} />
+                      View
+                    </a>
+                    {variant === "admin" && (
+                      <button
+                        type="button"
+                        aria-label="More actions"
+                        class="inline-flex h-8 w-8 items-center justify-center rounded-[8px] border border-line text-muted transition-colors hover:bg-surface-subtle hover:text-ink"
+                      >
+                        <Icon name="more-horizontal" size={15} />
+                      </button>
+                    )}
+                  </div>
+                </td>
+              </tr>
+            );
+          })
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

@@ -1,0 +1,77 @@
+---
+import ContentPage from "@/layouts/ContentPage.astro";
+import Prose from "@/components/ui/Prose.astro";
+
+const updated = "1 September 2026";
+---
+
+<ContentPage
+  title="Privacy Policy"
+  description="How ghorebose.com collects, uses and protects your personal information."
+  crumb="Privacy Policy"
+  updated={updated}
+>
+  <Prose>
+    <p>
+      Your privacy matters. This policy explains what information we collect,
+      why we collect it, and how we protect it when you use ghorebose.com.
+    </p>
+
+    <h2>Information we collect</h2>
+    <ul>
+      <li><strong>Account information</strong> — name, email address and phone number.</li>
+      <li><strong>Order information</strong> — tools purchased, plans, amounts and dates.</li>
+      <li><strong>Payment information</strong> — the payment number and transaction ID you submit for verification. We do not store card or wallet credentials.</li>
+      <li><strong>Usage information</strong> — pages viewed and actions taken, used to improve the Marketplace.</li>
+    </ul>
+
+    <h2>How we use your information</h2>
+    <ul>
+      <li>To create and secure your account.</li>
+      <li>To process, verify and deliver your orders.</li>
+      <li>To provide support and respond to your requests.</li>
+      <li>To send order updates and, with consent, product news.</li>
+      <li>To detect fraud and prevent abuse of the Marketplace.</li>
+    </ul>
+
+    <h2>Payment verification</h2>
+    <p>
+      To verify a payment we match the transaction ID you submit against our
+      merchant account. This information is visible only to authorised admin
+      staff and is retained for accounting and dispute resolution.
+    </p>
+
+    <h2>Sharing your information</h2>
+    <p>
+      We do not sell your personal data. We share information only with service
+      providers that help us operate the Marketplace, or where required by law.
+    </p>
+
+    <h2>Data security</h2>
+    <p>
+      We use industry-standard measures to protect your data, including
+      encryption in transit and access controls. No method of transmission is
+      perfectly secure, so please keep your password confidential.
+    </p>
+
+    <h2>Your rights</h2>
+    <ul>
+      <li>Access and update your information from your dashboard.</li>
+      <li>Request a copy of the data we hold about you.</li>
+      <li>Request deletion of your account, subject to legal retention requirements.</li>
+      <li>Opt out of marketing communications at any time.</li>
+    </ul>
+
+    <h2>Cookies</h2>
+    <p>
+      We use essential cookies to keep you signed in and remember preferences.
+      You can control cookies through your browser settings.
+    </p>
+
+    <h2>Contact</h2>
+    <p>
+      For privacy requests, email
+      <a href="mailto:privacy@ghorebose.com">privacy@ghorebose.com</a>.
+    </p>
+  </Prose>
+</ContentPage>

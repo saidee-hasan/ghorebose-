@@ -1,0 +1,63 @@
+---
+import { formatBDT, billingLabel } from "@/lib/format";
+import type { Billing } from "@/lib/types";
+
+interface Props {
+  price: number;
+  compareAtPrice?: number;
+  billing?: Billing;
+  size?: "sm" | "md" | "lg";
+  free?: boolean;
+  class?: string;
+}
+
+const {
+  price,
+  compareAtPrice,
+  billing = "month",
+  size = "md",
+  free = false,
+  class: className = "",
+} = Astro.props;
+
+const priceSizes: Record<string, string> = {
+  sm: "text-base",
+  md: "text-xl",
+  lg: "text-3xl",
+};
+const suffixSizes: Record<string, string> = {
+  sm: "text-[11px]",
+  md: "text-xs",
+  lg: "text-sm",
+};
+
+const cls = ["flex flex-wrap items-baseline gap-x-2 gap-y-0.5", className]
+  .filter(Boolean)
+  .join(" ");
+---
+
+<div class={cls}>
+  {
+    free ? (
+      <span class={`font-display font-extrabold text-accent ${priceSizes[size]}`}>
+        Free
+      </span>
+    ) : (
+      <>
+        <span class={`font-display font-extrabold tracking-tight text-accent ${priceSizes[size]}`}>
+          {formatBDT(price)}
+        </span>
+        <span class={`font-medium text-muted ${suffixSizes[size]}`}>
+          {billingLabel(billing)}
+        </span>
+        {
+          compareAtPrice && (
+            <span class={`font-medium text-muted line-through ${suffixSizes[size]}`}>
+              {formatBDT(compareAtPrice)}
+            </span>
+          )
+        }
+      </>
+    )
+  }
+</div>

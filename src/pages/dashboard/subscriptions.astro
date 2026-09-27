@@ -1,0 +1,110 @@
+---
+import DashboardLayout from "@/layouts/DashboardLayout.astro";
+import Button from "@/components/ui/Button.astro";
+import Icon from "@/components/ui/Icon.astro";
+import StatusBadge from "@/components/ui/StatusBadge.astro";
+import { getPurchasedOrders } from "@/data/orders";
+import { getTool } from "@/data/tools";
+import { formatDate, formatBDT, daysUntil } from "@/lib/format";
+
+const subs = getPurchasedOrders().map((o) => {
+  const total = 30;
+  const remaining = Math.max(0, Math.min(total, daysUntil(o.expiresAt)));
+  return {
+    order: o,
+    tool: getTool(o.toolSlug),
+    remaining,
+    percent: Math.round((remaining / total) * 100),
+  };
+});
+---
+
+<DashboardLayout
+  title="Active Subscriptions"
+  active="subscriptions"
+  heading="Active Subscriptions"
+  description="Manage renewal dates and keep your AI access uninterrupted."
+>
+  <Fragment slot="actions">
+    <Button href="/tools" variant="outline" icon="search">Add subscription</Button>
+  </Fragment>
+
+  <div class="space-y-4">
+    {
+      subs.map(({ order, tool, remaining, percent }) => (
+        <article class="rounded-[16px] border border-line bg-white p-5 shadow-xs">
+          <div class="flex flex-wrap items-start justify-between gap-4">
+            <div class="flex items-center gap-4">
+              <span
+                class:list={[
+                  "inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-[12px] font-display text-sm font-extrabold",
+                  tool?.tone === "brand"
+                    ? "bg-accent text-white"
+                    : tool?.tone === "outline"
+                      ? "border border-line-strong bg-white text-ink"
+                      : "bg-ink text-white",
+                ]}
+              >
+                {tool?.mark ?? "AI"}
+              </span>
+              <div>
+                <h2 class="font-display text-[15px] font-bold text-ink">{order.toolName}</h2>
+                <p class="text-xs text-muted">{order.plan} · renews {formatDate(order.expiresAt)}</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-3">
+              <StatusBadge type="payment" status="delivered" />
+              <Button href="#" size="sm" icon="refresh">Renew</Button>
+            </div>
+          </div>
+
+          <div class="mt-5">
+            <div class="mb-2 flex items-center justify-between text-xs">
+              <span class="font-medium text-muted">
+                {remaining > 0 ? `${remaining} days remaining` : "Expired"}
+              </span>
+              <span class="font-semibold text-ink">{formatBDT(order.amount)} / month</span>
+            </div>
+            <div class="h-2 overflow-hidden rounded-full bg-surface-muted">
+              <div
+                class:list={[
+                  "h-full rounded-full",
+                  percent > 30 ? "bg-accent" : "bg-ink",
+                ]}
+                style={`width:${Math.max(percent, 3)}%`}
+              ></div>
+            </div>
+          </div>
+
+          <div class="mt-4 flex flex-wrap items-center gap-3 border-t border-line pt-4">
+            <a href="/dashboard/purchased" class="text-[13px] font-semibold text-accent hover:text-accent-hover">
+              Open access
+            </a>
+            <span class="text-line">·</span>
+            <a href={`/dashboard/orders/${order.id}`} class="text-[13px] font-semibold text-muted-strong hover:text-ink">
+              Order details
+            </a>
+            <span class="ml-auto flex items-center gap-1.5 text-xs text-muted">
+              <Icon name="info" size={13} /> Auto-renew is off
+            </span>
+          </div>
+        </article>
+      ))
+    }
+  </div>
+
+  <div class="mt-6 flex flex-col items-start justify-between gap-4 rounded-[16px] border border-line bg-surface-subtle p-5 sm:flex-row sm:items-center">
+    <div class="flex items-center gap-3">
+      <span class="inline-flex h-10 w-10 items-center justify-center rounded-[11px] bg-white text-accent ring-1 ring-line">
+        <Icon name="refresh" size={19} />
+      </span>
+      <div>
+        <p class="text-sm font-bold text-ink">Renew early, never lose access</p>
+        <p class="mt-0.5 text-[13px] text-muted">
+          Renewing before the expiry date extends your subscription without interruption.
+        </p>
+      </div>
+    </div>
+    <Button href="/help" variant="outline" size="sm">How renewals work</Button>
+  </div>
+</DashboardLayout>

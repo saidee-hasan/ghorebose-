@@ -1,0 +1,104 @@
+---
+import AdminLayout from "@/layouts/AdminLayout.astro";
+import Input from "@/components/ui/Input.astro";
+import Select from "@/components/ui/Select.astro";
+import Button from "@/components/ui/Button.astro";
+import Icon from "@/components/ui/Icon.astro";
+import { coupons } from "@/data/customers";
+import { formatDate } from "@/lib/format";
+
+const statusTone: Record<string, string> = {
+  active: "border-ink bg-ink text-white",
+  expired: "border-line bg-surface-muted text-muted-strong",
+  scheduled: "border-brand-200 bg-brand-50 text-brand-700",
+};
+---
+
+<AdminLayout
+  title="Coupons"
+  active="coupons"
+  heading="Coupons"
+  description="Create discount codes and track their performance."
+>
+  <div class="grid gap-6 xl:grid-cols-[minmax(0,1fr)_340px] xl:items-start">
+    <div class="overflow-hidden rounded-[16px] border border-line bg-white shadow-xs">
+      <div class="overflow-x-auto">
+        <table class="w-full min-w-[720px] text-left text-sm">
+          <thead>
+            <tr class="border-b border-line bg-surface-subtle text-[11px] font-bold uppercase tracking-[0.08em] text-muted">
+              <th class="px-5 py-3.5">Code</th>
+              <th class="px-5 py-3.5">Discount</th>
+              <th class="px-5 py-3.5">Usage</th>
+              <th class="px-5 py-3.5">Expires</th>
+              <th class="px-5 py-3.5">Status</th>
+              <th class="px-5 py-3.5 text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-line">
+            {
+              coupons.map((c) => (
+                <tr class="transition-colors hover:bg-surface-subtle">
+                  <td class="px-5 py-4">
+                    <span class="inline-flex items-center gap-2 font-mono text-[13px] font-bold text-ink">
+                      <Icon name="percent" size={15} class="text-accent" />
+                      {c.code}
+                    </span>
+                  </td>
+                  <td class="px-5 py-4 font-semibold text-ink">
+                    {c.type === "percent" ? `${c.value}% off` : `৳${c.value} off`}
+                  </td>
+                  <td class="px-5 py-4 text-muted">
+                    <div class="flex items-center gap-2">
+                      <div class="h-1.5 w-20 overflow-hidden rounded-full bg-surface-muted">
+                        <div
+                          class="h-full rounded-full bg-accent"
+                          style={`width:${Math.min(100, Math.round((c.uses / c.limit) * 100))}%`}
+                        />
+                      </div>
+                      <span class="text-xs">{c.uses}/{c.limit}</span>
+                    </div>
+                  </td>
+                  <td class="px-5 py-4 text-muted">{formatDate(c.expires)}</td>
+                  <td class="px-5 py-4">
+                    <span class:list={["inline-flex items-center rounded-full border px-2.5 py-0.5 text-[11px] font-bold capitalize", statusTone[c.status]]}>
+                      {c.status}
+                    </span>
+                  </td>
+                  <td class="px-5 py-4">
+                    <div class="flex items-center justify-end gap-1">
+                      <button type="button" aria-label="Edit" class="inline-flex h-8 w-8 items-center justify-center rounded-[8px] border border-line text-muted transition-colors hover:bg-surface-subtle hover:text-ink">
+                        <Icon name="edit" size={15} />
+                      </button>
+                      <button type="button" aria-label="Delete" class="inline-flex h-8 w-8 items-center justify-center rounded-[8px] border border-line text-muted transition-colors hover:bg-surface-subtle hover:text-ink">
+                        <Icon name="trash" size={15} />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <aside class="rounded-[16px] border border-line bg-white p-5 shadow-xs">
+      <h2 class="font-display text-base font-bold text-ink">Create coupon</h2>
+      <form class="mt-4 space-y-4" onsubmit="event.preventDefault();">
+        <Input label="Coupon code" name="code" placeholder="SUMMER25" required />
+        <Select
+          label="Discount type"
+          name="type"
+          options={[
+            { value: "percent", label: "Percentage" },
+            { value: "fixed", label: "Fixed amount (৳)" },
+          ]}
+        />
+        <Input label="Discount value" name="value" type="number" placeholder="25" required />
+        <Input label="Usage limit" name="limit" type="number" placeholder="500" />
+        <Input label="Expiry date" name="expires" type="date" />
+        <Button type="submit" block icon="plus">Create coupon</Button>
+      </form>
+    </aside>
+  </div>
+</AdminLayout>

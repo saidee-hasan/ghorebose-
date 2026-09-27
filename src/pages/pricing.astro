@@ -1,0 +1,217 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import Navbar from "@/components/layout/Navbar.astro";
+import Footer from "@/components/layout/Footer.astro";
+import Breadcrumbs from "@/components/ui/Breadcrumbs.astro";
+import SectionHeading from "@/components/ui/SectionHeading.astro";
+import Icon from "@/components/ui/Icon.astro";
+import Button from "@/components/ui/Button.astro";
+import FaqAccordion from "@/components/marketplace/FaqAccordion.astro";
+
+const tiers = [
+  {
+    name: "Free",
+    price: 0,
+    tagline: "For getting started",
+    features: [
+      "Browse every AI tool",
+      "Access free tools",
+      "Standard support",
+      "Order tracking dashboard",
+      "No membership fee",
+    ],
+    cta: "Create free account",
+    href: "/signup",
+  },
+  {
+    name: "Plus",
+    price: 499,
+    tagline: "For regular buyers",
+    popular: true,
+    features: [
+      "Everything in Free",
+      "5% off every tool purchase",
+      "Priority payment verification",
+      "Renewal reminders",
+      "Faster support replies",
+    ],
+    cta: "Start Plus",
+    href: "/signup?plan=plus",
+  },
+  {
+    name: "Pro",
+    price: 1499,
+    tagline: "For power users & teams",
+    features: [
+      "Everything in Plus",
+      "12% off every tool purchase",
+      "Dedicated account manager",
+      "Bulk purchases and invoicing",
+      "Early access to new tools",
+    ],
+    cta: "Start Pro",
+    href: "/signup?plan=pro",
+  },
+];
+
+const faq = [
+  {
+    q: "Do I pay separately for each AI tool?",
+    a: "Yes. Each tool has its own price set by the seller. A ghorebose.com membership simply reduces that price and adds perks like priority verification.",
+  },
+  {
+    q: "Can I cancel my membership?",
+    a: "Memberships are month to month and can be cancelled any time from Settings. You keep your discount until the end of the billing period.",
+  },
+  {
+    q: "What payment methods are accepted?",
+    a: "bKash, Nagad and Rocket for all purchases and memberships. Every transaction is verified by our admin team.",
+  },
+  {
+    q: "Are there hidden fees?",
+    a: "No. The price you see at checkout is the price you pay. No service fees are added at the end.",
+  },
+];
+
+const compare = [
+  { feature: "Browse all AI tools", free: true, plus: true, pro: true },
+  { feature: "Access free tools", free: true, plus: true, pro: true },
+  { feature: "Membership discount", free: false, plus: "5%", pro: "12%" },
+  { feature: "Priority verification", free: false, plus: true, pro: true },
+  { feature: "Dedicated account manager", free: false, plus: false, pro: true },
+  { feature: "Bulk purchases & invoicing", free: false, plus: false, pro: true },
+];
+---
+
+<BaseLayout
+  title="Pricing"
+  description="Transparent pricing for ghorebose.com. Free to browse, with optional memberships that discount every AI tool purchase."
+>
+  <Navbar active="pricing" />
+
+  <main id="main" class="flex-1">
+    <div class="border-b border-line bg-surface-subtle">
+      <div class="container-page py-10 sm:py-14">
+        <Breadcrumbs items={[{ label: "Home", href: "/" }, { label: "Pricing" }]} />
+        <div class="mt-5 mx-auto max-w-2xl text-center">
+          <SectionHeading
+            align="center"
+            eyebrow="Pricing"
+            title="Simple, transparent pricing"
+            description="Browsing is always free. Add a membership to pay less on every AI tool and get your orders verified first."
+            class="mx-auto max-w-2xl"
+          />
+        </div>
+      </div>
+    </div>
+
+    <section class="section">
+      <div class="container-page">
+        <div class="grid gap-5 lg:grid-cols-3">
+          {
+            tiers.map((t) => (
+              <div
+                class:list={[
+                  "relative flex flex-col rounded-[20px] border bg-white p-6 sm:p-7",
+                  t.popular ? "border-accent shadow-md" : "border-line shadow-xs",
+                ]}
+              >
+                {t.popular && (
+                  <span class="absolute -top-3 left-6 rounded-full bg-accent px-3 py-1 text-xs font-bold uppercase tracking-wide text-white">
+                    Most popular
+                  </span>
+                )}
+                <h2 class="font-display text-lg font-extrabold tracking-tight text-ink">
+                  {t.name}
+                </h2>
+                <p class="mt-1 text-sm text-muted">{t.tagline}</p>
+                <p class="mt-5 font-display text-4xl font-extrabold tracking-tight text-ink">
+                  {t.price === 0 ? "Free" : `৳${t.price}`}
+                  {t.price > 0 && (
+                    <span class="ml-1 text-sm font-medium text-muted">/ month</span>
+                  )}
+                </p>
+                <ul class="mt-6 flex-1 space-y-3 border-t border-line pt-6">
+                  {t.features.map((f) => (
+                    <li class="flex items-start gap-3 text-sm text-muted-strong">
+                      <Icon name="check" size={16} class="mt-0.5 shrink-0 text-accent" />
+                      {f}
+                    </li>
+                  ))}
+                </ul>
+                <Button
+                  href={t.href}
+                  variant={t.popular ? "primary" : "outline"}
+                  size="lg"
+                  block
+                  class="mt-7"
+                >
+                  {t.cta}
+                </Button>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <!-- Comparison -->
+    <section class="section border-y border-line bg-surface-subtle">
+      <div class="container-page">
+        <SectionHeading
+          title="Compare memberships"
+          description="Every plan includes the full marketplace. Memberships add savings and priority service."
+        />
+        <div class="mt-8 overflow-hidden rounded-[16px] border border-line bg-white shadow-xs">
+          <div class="overflow-x-auto">
+            <table class="w-full min-w-[640px] text-left text-sm">
+              <thead>
+                <tr class="border-b border-line bg-surface-subtle text-xs font-bold uppercase tracking-[0.08em] text-muted">
+                  <th class="px-5 py-3.5">Feature</th>
+                  <th class="px-5 py-3.5 text-center">Free</th>
+                  <th class="px-5 py-3.5 text-center">Plus</th>
+                  <th class="px-5 py-3.5 text-center">Pro</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-line">
+                {
+                  compare.map((row) => (
+                    <tr>
+                      <td class="px-5 py-4 font-medium text-ink">{row.feature}</td>
+                      {[row.free, row.plus, row.pro].map((v) => (
+                        <td class="px-5 py-4 text-center">
+                          {v === true ? (
+                            <Icon name="check" size={17} class="mx-auto text-accent" />
+                          ) : v === false ? (
+                            <span class="text-muted">—</span>
+                          ) : (
+                            <span class="font-semibold text-ink">{v}</span>
+                          )}
+                        </td>
+                      ))}
+                    </tr>
+                  ))
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container-page">
+        <div class="grid gap-10 lg:grid-cols-[1fr_1.2fr]">
+          <SectionHeading
+            eyebrow="Questions"
+            title="Pricing FAQ"
+            description="Everything you need to know about how pricing works on the marketplace."
+          />
+          <FaqAccordion faq={faq} />
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</BaseLayout>

@@ -1,0 +1,141 @@
+---
+import ContentPage from "@/layouts/ContentPage.astro";
+import Input from "@/components/ui/Input.astro";
+import Select from "@/components/ui/Select.astro";
+import Button from "@/components/ui/Button.astro";
+import Icon from "@/components/ui/Icon.astro";
+
+const channels = [
+  {
+    icon: "whatsapp",
+    title: "WhatsApp সরাসরি চ্যাট",
+    value: "+880 1712-345678",
+    hint: "সবচেয়ে দ্রুত উত্তর পেতে (সকাল ১০টা - রাত ১২টা)",
+    href: "https://wa.me/8801712345678",
+    color: "bg-emerald-50 text-emerald-700 border-emerald-200",
+  },
+  {
+    icon: "phone",
+    title: "ফোন হটলাইন",
+    value: "+880 1712-345678",
+    hint: "সরাসরি কল করুন (সকাল ১০টা - রাত ১০টা)",
+    href: "tel:+8801712345678",
+    color: "bg-surface-muted text-ink border-line",
+  },
+  {
+    icon: "mail",
+    title: "ইমেইল সাপোর্ট",
+    value: "support@ghorebose.com",
+    hint: "সাধারণত ২-৪ ঘণ্টার মধ্যে উত্তর দেওয়া হয়",
+    href: "mailto:support@ghorebose.com",
+    color: "bg-surface-muted text-ink border-line",
+  },
+  {
+    icon: "map-pin",
+    title: "অফিস ঠিকানা",
+    value: "লেভেল ৪, হাউজ ২৪, রোড ১১, বনানী, ঢাকা-১২১৩",
+    hint: "বাংলাদেশ",
+    href: "#",
+    color: "bg-surface-muted text-ink border-line",
+  },
+];
+
+const topics = [
+  { value: "order", label: "অর্ডার বা অ্যাক্টিভেশন সমস্যা (Order issue)" },
+  { value: "payment", label: "পেমেন্ট ভেরিফিকেশন (Payment verification)" },
+  { value: "warranty", label: "ওয়ারেন্টি ও রিপ্লেসমেন্ট (Warranty support)" },
+  { value: "refund", label: "রিফান্ড অনুরোধ (Refund request)" },
+  { value: "partnership", label: "কর্পোরেট বা পার্টনারশিপ (Partnership)" },
+  { value: "other", label: "অন্যান্য জিজ্ঞাসা (Other inquiry)" },
+];
+---
+
+<ContentPage
+  title="যোগাযোগ ও সহায়তা — ghorebose.com"
+  description="অর্ডার, পেমেন্ট বা যেকোনো এআই টুলস সম্পর্কিত প্রশ্নের জন্য আমাদের ডেডিকেটেড বাংলা সাপোর্ট টিমের সাথে যোগাযোগ করুন।"
+  crumb="যোগাযোগ"
+  narrow={false}
+>
+  <div class="grid gap-10 lg:grid-cols-[1.4fr_1fr]">
+    <div class="rounded-[20px] border border-line bg-white p-6 shadow-xs sm:p-8">
+      <h2 class="font-display text-lg font-bold text-ink font-bangla">আমাদের একটি বার্তা পাঠান</h2>
+      <p class="mt-1 text-xs sm:text-sm text-muted font-bangla">
+        আপনার প্রশ্ন বা সমস্যার বিবরণ লিখুন। অর্ডারের বিষয়ে হলে Order ID উল্লেখ করতে পারেন।
+      </p>
+      
+      <form class="mt-6 space-y-5" onsubmit="event.preventDefault(); alert('ধন্যবাদ! আপনার বার্তাটি আমরা পেয়েছি। আমাদের টিম দ্রুত আপনার সাথে যোগাযোগ করবে।');">
+        <div class="grid gap-5 sm:grid-cols-2">
+          <Input label="আপনার নাম" name="name" placeholder="যেমন: তানভীর আহমেদ" required />
+          <Input
+            label="ইমেইল এড্রেস"
+            name="email"
+            type="email"
+            placeholder="you@example.com"
+            required
+          />
+        </div>
+        <div class="grid gap-5 sm:grid-cols-2">
+          <Input label="অর্ডার আইডি (যদি থাকে)" name="order" placeholder="যেমন: GB-123456" hint="ঐচ্ছিক" />
+          <Select
+            label="বিষয়ের ধরণ (Topic)"
+            name="topic"
+            options={topics}
+            placeholder="একটি বিষয় নির্বাচন করুন"
+          />
+        </div>
+        <Input
+          label="আপনার বার্তা বা প্রশ্ন"
+          name="message"
+          type="textarea"
+          placeholder="বিস্তারিত লিখুন..."
+          required
+          rows={5}
+        />
+        <div class="flex flex-wrap items-center gap-3">
+          <Button type="submit" size="lg" icon="mail">মেসেজ পাঠান</Button>
+          <p class="text-xs text-muted font-bangla">আমরা সাধারণত খুব দ্রুতই উত্তর দিয়ে থাকি।</p>
+        </div>
+      </form>
+    </div>
+
+    <div class="space-y-4">
+      {
+        channels.map((c) => (
+          <a
+            href={c.href}
+            class={`flex items-start gap-4 rounded-[16px] border p-5 shadow-xs transition-all hover:border-line-strong hover:shadow-sm ${c.color || "bg-white border-line"}`}
+          >
+            <span class="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-[12px] bg-white text-ink shadow-xs">
+              <Icon name={c.icon} size={20} />
+            </span>
+            <div class="min-w-0">
+              <span class="block text-xs font-bold uppercase tracking-[0.1em] text-muted font-bangla">
+                {c.title}
+              </span>
+              <span class="mt-1 block text-sm font-bold text-ink truncate">{c.value}</span>
+              <span class="mt-0.5 block text-xs text-muted font-bangla">{c.hint}</span>
+            </div>
+          </a>
+        ))
+      }
+
+      <div class="rounded-[16px] border border-line bg-surface-subtle p-5 font-bangla">
+        <h3 class="text-sm font-bold text-ink">যোগাযোগের পূর্বে পরামর্শ:</h3>
+        <ul class="mt-3 space-y-2">
+          {
+            [
+              "আপনার ড্যাশবোর্ডে অর্ডার স্ট্যাটাস দেখে নিন",
+              "পেমেন্টের TrxID এবং প্রেরক মোবাইল নাম্বার সাথে রাখুন",
+              "অর্ডার ভেরিফিকেশনের জন্য ১০–৩০ মিনিট সময় দিন",
+            ].map((t) => (
+              <li class="flex items-start gap-2 text-xs text-muted-strong">
+                <Icon name="check" size={14} class="mt-0.5 shrink-0 text-accent" />
+                {t}
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+  </div>
+</ContentPage>

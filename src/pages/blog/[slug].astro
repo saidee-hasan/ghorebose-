@@ -1,0 +1,140 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import Navbar from "@/components/layout/Navbar.astro";
+import Footer from "@/components/layout/Footer.astro";
+import Breadcrumbs from "@/components/ui/Breadcrumbs.astro";
+import Avatar from "@/components/ui/Avatar.astro";
+import Icon from "@/components/ui/Icon.astro";
+import Prose from "@/components/ui/Prose.astro";
+import Button from "@/components/ui/Button.astro";
+import { blogPosts, getPost } from "@/data/blog";
+import { formatDate } from "@/lib/format";
+import { initials } from "@/lib/utils";
+
+export function getStaticPaths() {
+  return blogPosts.map((post) => ({ params: { slug: post.slug } }));
+}
+
+const { slug } = Astro.params;
+const post = getPost(slug!)!;
+const related = blogPosts.filter((p) => p.slug !== slug).slice(0, 3);
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  headline: post.title,
+  description: post.excerpt,
+  author: { "@type": "Person", name: post.author },
+  datePublished: post.date,
+};
+---
+
+<BaseLayout
+  title={post.title}
+  description={post.excerpt}
+  canonical={`/blog/${post.slug}`}
+>
+  <Navbar active="blog" />
+
+  <main id="main" class="flex-1">
+    <div class="border-b border-line bg-surface-subtle">
+      <div class="container-page py-10">
+        <Breadcrumbs
+          items={[
+            { label: "Home", href: "/" },
+            { label: "Blog", href: "/blog" },
+            { label: post.category },
+          ]}
+        />
+        <div class="mt-5 mx-auto max-w-3xl">
+          <span class="rounded-full bg-brand-50 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide text-brand-700">
+            {post.category}
+          </span>
+          <h1 class="mt-4 font-display text-3xl font-extrabold leading-tight tracking-tight text-ink sm:text-4xl">
+            {post.title}
+          </h1>
+          <p class="mt-3 text-base leading-relaxed text-muted">{post.excerpt}</p>
+          <div class="mt-6 flex items-center gap-3">
+            <Avatar initials={initials(post.author)} size="md" />
+            <div>
+              <p class="text-sm font-bold text-ink">{post.author}</p>
+              <p class="text-xs text-muted">
+                {formatDate(post.date)} · {post.readTime}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <article class="container-page py-10 sm:py-14">
+      <div class="mx-auto max-w-3xl">
+        <Prose>
+          {post.body.map((para) => <p>{para}</p>)}
+        </Prose>
+
+        <div class="mt-10 flex items-center justify-between border-y border-line py-5">
+          <span class="text-xs font-bold uppercase tracking-[0.12em] text-muted">
+            Share this article
+          </span>
+          <div class="flex items-center gap-2">
+            {
+              ["link", "globe", "mail"].map((i) => (
+                <a
+                  href="#"
+                  aria-label={`Share via ${i}`}
+                  class="inline-flex h-9 w-9 items-center justify-center rounded-[10px] border border-line text-muted transition-colors hover:border-line-strong hover:text-ink"
+                >
+                  <Icon name={i} size={16} />
+                </a>
+              ))
+            }
+          </div>
+        </div>
+
+        <div class="mt-8 rounded-[16px] border border-line bg-surface-subtle p-6 text-center">
+          <h2 class="font-display text-lg font-bold text-ink">
+            Ready to try these tools?
+          </h2>
+          <p class="mt-1 text-sm text-muted">
+            Browse the marketplace and buy access with bKash, Nagad or Rocket.
+          </p>
+          <Button href="/tools" class="mt-4" iconRight="arrow-right">
+            Explore AI Tools
+          </Button>
+        </div>
+      </div>
+
+      <!-- Related -->
+      <section class="mx-auto mt-14 max-w-5xl">
+        <h2 class="font-display text-xl font-extrabold tracking-tight text-ink">
+          More from the blog
+        </h2>
+        <div class="mt-6 grid gap-6 sm:grid-cols-3">
+          {
+            related.map((p) => (
+              <a
+                href={`/blog/${p.slug}`}
+                class="group flex flex-col rounded-[16px] border border-line bg-white p-5 shadow-xs transition-all hover:-translate-y-0.5 hover:shadow-md"
+              >
+                <span class="text-[11px] font-bold uppercase tracking-wide text-accent">
+                  {p.category}
+                </span>
+                <h3 class="mt-2 font-display text-[15px] font-bold text-ink group-hover:text-accent">
+                  {p.title}
+                </h3>
+                <p class="mt-2 line-clamp-2 flex-1 text-[13px] text-muted">
+                  {p.excerpt}
+                </p>
+                <span class="mt-4 text-xs text-muted">{p.readTime}</span>
+              </a>
+            ))
+          }
+        </div>
+      </section>
+    </article>
+  </main>
+
+  <Footer />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+</BaseLayout>

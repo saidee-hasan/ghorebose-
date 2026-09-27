@@ -1,0 +1,46 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import Navbar from "@/components/layout/Navbar.astro";
+import Footer from "@/components/layout/Footer.astro";
+import Breadcrumbs from "@/components/ui/Breadcrumbs.astro";
+import CheckoutFlow from "@/components/checkout/CheckoutFlow";
+import { tools, getTool } from "@/data/tools";
+
+export function getStaticPaths() {
+  return tools.map((tool) => ({ params: { slug: tool.slug } }));
+}
+
+const { slug } = Astro.params;
+const tool = getTool(slug!)!;
+const plan = Astro.url.searchParams.get("plan") ?? undefined;
+---
+
+<BaseLayout
+  title={`Checkout — ${tool.name}`}
+  description={`Complete your purchase of ${tool.name} on ghorebose.com.`}
+  noindex
+>
+  <Navbar active="tools" />
+
+  <main id="main" class="flex-1 bg-surface-subtle">
+    <div class="container-page py-8 sm:py-10">
+      <Breadcrumbs
+        items={[
+          { label: "Home", href: "/" },
+          { label: "AI Tools", href: "/tools" },
+          { label: tool.name, href: `/tools/${tool.slug}` },
+          { label: "Checkout" },
+        ]}
+      />
+      <h1
+        class="mt-4 mb-8 font-display text-2xl font-extrabold tracking-tight text-ink sm:text-3xl"
+      >
+        Checkout
+      </h1>
+
+      <CheckoutFlow client:load tool={tool as any} initialPlan={plan} />
+    </div>
+  </main>
+
+  <Footer />
+</BaseLayout>

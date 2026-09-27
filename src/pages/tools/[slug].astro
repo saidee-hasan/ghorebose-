@@ -1,0 +1,375 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import Navbar from "@/components/layout/Navbar.astro";
+import Footer from "@/components/layout/Footer.astro";
+import Breadcrumbs from "@/components/ui/Breadcrumbs.astro";
+import Rating from "@/components/ui/Rating.astro";
+import Icon from "@/components/ui/Icon.astro";
+import ToolLogo from "@/components/ui/ToolLogo.astro";
+import { tools, getTool } from "@/data/tools";
+import { getCategoryName } from "@/data/categories";
+import { formatBDT } from "@/lib/format";
+
+export function getStaticPaths() {
+  return tools.map((tool) => ({ params: { slug: tool.slug } }));
+}
+
+const { slug } = Astro.params;
+const tool = getTool(slug!)!;
+const catName = getCategoryName(tool.category);
+
+const discount = tool.compareAtPrice
+  ? Math.round((1 - tool.price / tool.compareAtPrice) * 100)
+  : 0;
+
+const badgeLabel: Record<string, string> = {
+  trending: "Trending",
+  new: "New",
+  popular: "Popular",
+  "best-value": "Best Value",
+  "editor-choice": "Editor's Choice",
+};
+
+const buyHref = `/checkout/${tool.slug}`;
+const priceText = tool.isFree ? "Free" : formatBDT(tool.price);
+
+/* 3. Quick information */
+const quickInfo = [
+  { label: "Category", value: catName, icon: "tag" },
+  { label: "Price", value: priceText, icon: "banknote" },
+  { label: "Duration", value: tool.duration, icon: "calendar" },
+  { label: "Delivery", value: "Fast (30 min)", icon: "zap" },
+];
+
+/* 6. What's included */
+const included = tool.included;
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Product",
+  name: tool.name,
+  description: tool.shortDescription,
+  category: catName,
+  aggregateRating: {
+    "@type": "AggregateRating",
+    ratingValue: tool.rating,
+    reviewCount: tool.reviewCount,
+  },
+  offers: {
+    "@type": "Offer",
+    price: tool.price,
+    priceCurrency: "BDT",
+    availability: "https://schema.org/InStock",
+  },
+};
+---
+
+<BaseLayout
+  title={`${tool.name} — ${catName}`}
+  description={tool.shortDescription}
+  canonical={`/tools/${tool.slug}`}
+>
+  <Navbar />
+
+  <main id="main" class="flex-1">
+    <!-- ===================== 1. BREADCRUMB + 2. MAIN PRODUCT ===================== -->
+    <section class="border-b border-line bg-surface-subtle">
+      <div class="container-page py-6 sm:py-8">
+        <Breadcrumbs
+          items={[
+            { label: "Home", href: "/" },
+            { label: "AI Tools", href: "/tools" },
+            { label: catName, href: `/category/${tool.category}` },
+            { label: tool.name },
+          ]}
+        />
+
+        <div class="mt-5 grid gap-8 lg:grid-cols-2 lg:items-start">
+          <!-- Left: logo + preview -->
+          <div
+            class="rounded-[20px] border border-line bg-white p-4 shadow-xs sm:p-5"
+          >
+            <div class="flex items-center gap-3">
+              <ToolLogo mark={tool.mark} tone={tool.tone} size="lg" />
+              <div class="min-w-0">
+                <p class="text-[11px] font-bold uppercase tracking-[0.12em] text-muted">
+                  Preview
+                </p>
+                <p class="truncate font-display text-base font-bold text-ink">
+                  {tool.name}
+                </p>
+              </div>
+              {
+                tool.isFree ? (
+                  <span class="ml-auto shrink-0 rounded-full bg-accent px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-white">
+                    Free
+                  </span>
+                ) : (
+                  discount > 0 && (
+                    <span class="ml-auto shrink-0 rounded-full bg-ink px-3 py-1 text-[11px] font-bold tracking-wide text-white">
+                      −{discount}%
+                    </span>
+                  )
+                )
+              }
+            </div>
+            <img
+              src={`/covers/${tool.slug}.svg`}
+              alt={`${tool.name} — ${catName}`}
+              width="800"
+              height="500"
+              class="mt-4 aspect-[16/11] w-full rounded-[14px] object-cover"
+            />
+          </div>
+
+          <!-- Right: info -->
+          <div>
+            <div class="flex flex-wrap items-center gap-2">
+              <a
+                href={`/category/${tool.category}`}
+                class="text-xs font-bold uppercase tracking-[0.12em] text-muted transition-colors hover:text-ink"
+              >
+                {catName}
+              </a>
+              {
+                tool.badge && (
+                  <span class="rounded-full border border-accent bg-brand-50 px-2.5 py-0.5 text-[11px] font-bold text-brand-700">
+                    {badgeLabel[tool.badge]}
+                  </span>
+                )
+              }
+            </div>
+
+            <h1
+              class="mt-2 font-display text-3xl font-extrabold leading-tight tracking-tight text-ink sm:text-4xl"
+            >
+              {tool.name}
+            </h1>
+
+            <div class="mt-3 flex flex-wrap items-center gap-x-5 gap-y-2">
+              <Rating
+                rating={tool.rating}
+                count={tool.reviewCount}
+                size={16}
+                showValue
+              />
+              <span class="flex items-center gap-1.5 text-xs font-medium text-muted">
+                <Icon name="users" size={14} />
+                {tool.userCount} buyers
+              </span>
+            </div>
+
+            <p class="mt-4 text-[15px] leading-relaxed text-muted">
+              {tool.shortDescription}
+            </p>
+
+            <!-- quick feature bullets -->
+            <ul class="mt-5 space-y-2">
+              {
+                ["Premium Access", tool.duration, "Fast Delivery"].map(
+                  (item) => (
+                    <li class="flex items-center gap-2.5 text-sm font-medium text-ink">
+                      <Icon name="check" size={16} class="shrink-0 text-ink" />
+                      {item}
+                    </li>
+                  ),
+                )
+              }
+            </ul>
+
+            <!-- price + buy -->
+            <div class="mt-6 border-t border-line pt-5">
+              <div class="flex flex-wrap items-baseline gap-2">
+                <span
+                  class="font-display text-4xl font-extrabold tracking-tight text-accent"
+                >
+                  {priceText}
+                </span>
+                {
+                  !tool.isFree && (
+                    <span class="text-sm font-semibold text-muted font-bangla">
+                      / {tool.duration}
+                    </span>
+                  )
+                }
+                {
+                  tool.compareAtPrice && (
+                    <span class="text-sm font-medium text-muted line-through">
+                      {formatBDT(tool.compareAtPrice)}
+                    </span>
+                  )
+                }
+              </div>
+
+              <!-- BD Payment Methods Highlight -->
+              <div class="mt-3 flex items-center gap-2">
+                <span class="text-xs font-bold text-ink font-bangla">পেমেন্ট মেথড:</span>
+                <span class="rounded bg-[#D12053] px-2 py-0.5 text-[10px] font-bold text-white">bKash বিকাশ</span>
+                <span class="rounded bg-[#F7931E] px-2 py-0.5 text-[10px] font-bold text-white">Nagad নগদ</span>
+                <span class="rounded bg-[#8C3494] px-2 py-0.5 text-[10px] font-bold text-white">Rocket রকেট</span>
+              </div>
+
+              <div class="mt-5 grid gap-2.5 sm:grid-cols-2">
+                <a
+                  href={buyHref}
+                  class="inline-flex h-12 items-center justify-center gap-2 rounded-[10px] bg-accent text-[15px] font-bold text-white shadow-md transition-all hover:bg-accent-hover hover:shadow-lg"
+                >
+                  <Icon name="cart" size={18} />
+                  <span>বিকাশ/নগদে কিনুন</span>
+                </a>
+                <a
+                  href={`https://wa.me/8801712345678?text=${encodeURIComponent(`আসসালামু আলাইকুম! আমি ${tool.name} সাবস্ক্রিপশন কিনতে চাচ্ছি।`)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="inline-flex h-12 items-center justify-center gap-2 rounded-[10px] border border-emerald-300 bg-emerald-50 text-sm font-bold text-emerald-700 transition-colors hover:bg-emerald-100"
+                >
+                  <Icon name="whatsapp" size={18} />
+                  <span>WhatsApp-এ জিজ্ঞাসা</span>
+                </a>
+              </div>
+
+              <!-- Trust Points for BD Users -->
+              <div class="mt-4 grid grid-cols-2 gap-2 rounded-xl bg-surface-subtle p-3 text-[11px] font-bangla text-muted-strong border border-line">
+                <div class="flex items-center gap-1.5">
+                  <span class="text-accent">✓</span>
+                  <span>১০–৩০ মিনিটে ডেলিভারি</span>
+                </div>
+                <div class="flex items-center gap-1.5">
+                  <span class="text-accent">✓</span>
+                  <span>ফুল রিপ্লেসমেন্ট ওয়ারেন্টি</span>
+                </div>
+                <div class="flex items-center gap-1.5">
+                  <span class="text-accent">✓</span>
+                  <span>কার্ড ছাড়া সহজ পেমেন্ট</span>
+                </div>
+                <div class="flex items-center gap-1.5">
+                  <span class="text-accent">✓</span>
+                  <span>২৪/৭ বাংলা সাপোর্ট</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== 3. QUICK INFORMATION ===================== -->
+    <section class="border-b border-line bg-white">
+      <div class="container-page py-6">
+        <div class="grid grid-cols-2 gap-3 lg:grid-cols-4">
+          {
+            quickInfo.map((info) => (
+              <div class="flex items-center gap-3 rounded-[14px] border border-line bg-surface-subtle p-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-[11px] bg-white text-ink ring-1 ring-line">
+                  <Icon name={info.icon} size={18} />
+                </span>
+                <div class="min-w-0">
+                  <p class="text-[11px] font-bold uppercase tracking-[0.1em] text-muted">
+                    {info.label}
+                  </p>
+                  <p class="truncate text-sm font-bold text-ink">
+                    {info.value}
+                  </p>
+                </div>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== 4. ABOUT + 5. FEATURES + 6. INCLUDED ===================== -->
+    <section class="section">
+      <div class="container-page space-y-12">
+        <!-- About -->
+        <div class="max-w-3xl">
+          <h2
+            class="font-display text-2xl font-extrabold tracking-tight text-ink"
+          >
+            About {tool.name}
+          </h2>
+          <div class="mt-4 space-y-4 text-[15px] leading-relaxed text-muted">
+            <p>{tool.overview}</p>
+            <p>
+              This listing is delivered through ghorebose.com with local payment
+              options and admin-verified transactions. You get the same core
+              features as buying directly, at a price that fits the local market.
+            </p>
+          </div>
+        </div>
+
+        <!-- Features -->
+        <div>
+          <h2
+            class="font-display text-2xl font-extrabold tracking-tight text-ink"
+          >
+            Features
+          </h2>
+          <ul class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {
+              tool.features.map((f) => (
+                <li class="flex items-start gap-3 rounded-[12px] border border-line bg-white p-4 text-sm font-medium text-ink">
+                  <Icon name="check" size={16} class="mt-0.5 shrink-0 text-ink" />
+                  {f}
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+
+        <!-- What's included -->
+        <div>
+          <h2
+            class="font-display text-2xl font-extrabold tracking-tight text-ink"
+          >
+            What's Included
+          </h2>
+          <div class="mt-6 rounded-[16px] border border-line bg-surface-subtle p-5 sm:p-6">
+            <ul class="grid gap-3 sm:grid-cols-2">
+              {
+                included.map((item) => (
+                  <li class="flex items-start gap-3 text-sm font-medium text-ink">
+                    <Icon
+                      name="check-circle"
+                      size={18}
+                      class="mt-0.5 shrink-0 text-ink"
+                    />
+                    {item}
+                  </li>
+                ))
+              }
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===================== MOBILE STICKY BUY BAR ===================== -->
+  <div
+    class="sticky bottom-0 z-40 border-t border-line bg-white/95 px-4 py-3 backdrop-blur-md lg:hidden"
+  >
+    <div class="flex items-center gap-4">
+      <div class="shrink-0">
+        <p class="font-display text-lg font-extrabold text-accent">
+          {priceText}
+          {!tool.isFree && (
+            <span class="text-[11px] font-medium text-muted"
+              >/ {tool.duration}</span
+            >
+          )}
+        </p>
+      </div>
+      <a
+        href={buyHref}
+        class="inline-flex h-12 flex-1 items-center justify-center gap-2 rounded-[10px] bg-accent text-sm font-semibold text-white transition-colors hover:bg-accent-hover"
+      >
+        <Icon name="cart" size={17} />
+        Buy Now
+      </a>
+    </div>
+  </div>
+
+  <Footer />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+</BaseLayout>

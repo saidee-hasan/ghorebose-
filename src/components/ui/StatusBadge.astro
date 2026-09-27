@@ -1,0 +1,62 @@
+---
+import Icon from "./Icon.astro";
+
+interface Props {
+  type?: "order" | "payment";
+  status: string;
+  class?: string;
+}
+
+const { type = "order", status, class: className = "" } = Astro.props;
+
+const map: Record<string, Record<string, string>> = {
+  order: {
+    pending: "brand",
+    processing: "brand",
+    completed: "ink",
+    cancelled: "muted",
+  },
+  payment: {
+    pending: "brand",
+    submitted: "brand",
+    verified: "outline",
+    rejected: "muted",
+    delivered: "ink",
+    completed: "ink",
+  },
+};
+
+const label = status.charAt(0).toUpperCase() + status.slice(1);
+const tone = map[type][status] ?? "muted";
+
+const tones: Record<string, string> = {
+  brand: "bg-brand-50 text-brand-700 border-brand-200",
+  ink: "bg-ink text-white border-ink",
+  outline: "bg-white text-ink border-line-strong",
+  muted: "bg-surface-muted text-muted-strong border-line",
+};
+
+const icons: Record<string, string> = {
+  pending: "clock",
+  submitted: "upload",
+  processing: "refresh",
+  verified: "check",
+  rejected: "x-circle",
+  delivered: "package",
+  completed: "check-check",
+  cancelled: "x",
+};
+
+const cls = [
+  "inline-flex items-center gap-1.5 font-semibold rounded-full border px-2.5 py-0.5 text-[11px] tracking-wide whitespace-nowrap",
+  tones[tone],
+  className,
+]
+  .filter(Boolean)
+  .join(" ");
+---
+
+<span class={cls}>
+  <Icon name={icons[status] ?? "circle"} size={12} />
+  {label}
+</span>

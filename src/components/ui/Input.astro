@@ -1,0 +1,140 @@
+---
+import Icon from "./Icon.astro";
+
+interface Props {
+  label?: string;
+  name: string;
+  type?: "text" | "email" | "password" | "number" | "tel" | "url" | "search" | "date" | "textarea";
+  placeholder?: string;
+  value?: string;
+  icon?: string;
+  hint?: string;
+  error?: string;
+  required?: boolean;
+  autocomplete?: string;
+  id?: string;
+  class?: string;
+  disabled?: boolean;
+  readonly?: boolean;
+  inputmode?: "text" | "numeric" | "decimal" | "email" | "tel" | "search" | "url";
+  pattern?: string;
+  min?: string;
+  max?: string;
+  maxlength?: number;
+  minlength?: number;
+  rows?: number;
+}
+
+const {
+  label,
+  name,
+  type = "text",
+  placeholder,
+  value,
+  icon,
+  hint,
+  error,
+  required = false,
+  autocomplete,
+  id,
+  class: className = "",
+  disabled = false,
+  readonly = false,
+  inputmode,
+  pattern,
+  min,
+  max,
+  maxlength,
+  minlength,
+  rows,
+} = Astro.props;
+
+const fieldId = id ?? name;
+const hasError = Boolean(error);
+const isTextarea = type === "textarea";
+
+const fieldCls = [
+  "w-full rounded-[10px] border bg-white text-ink placeholder:text-muted/70",
+  "transition-colors duration-150 focus-ring",
+  icon ? "pl-11" : "pl-4",
+  "pr-4 py-3 text-sm",
+  isTextarea ? "min-h-[120px] resize-y" : "h-12",
+  hasError
+    ? "border-ink focus:border-ink"
+    : "border-line hover:border-line-strong focus:border-accent",
+  disabled ? "bg-surface-muted text-muted cursor-not-allowed" : "",
+  className,
+]
+  .filter(Boolean)
+  .join(" ");
+---
+
+<div class="w-full">
+  {
+    label && (
+      <label
+        for={fieldId}
+        class="mb-1.5 flex items-center gap-1 text-[13px] font-semibold text-ink"
+      >
+        {label}
+        {required && <span class="text-accent">*</span>}
+      </label>
+    )
+  }
+  <div class="relative">
+    {
+      icon && (
+        <Icon
+          name={icon}
+          size={18}
+          class="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-muted"
+        />
+      )
+    }
+    {
+      isTextarea ? (
+        <textarea
+          id={fieldId}
+          name={name}
+          placeholder={placeholder}
+          required={required}
+          disabled={disabled}
+          readonly={readonly}
+          rows={rows ?? 5}
+          maxlength={maxlength}
+          minlength={minlength}
+          class={fieldCls}
+        >{value}</textarea>
+      ) : (
+        <input
+          id={fieldId}
+          name={name}
+          type={type as any}
+          placeholder={placeholder}
+          value={value}
+          required={required}
+          disabled={disabled}
+          readonly={readonly}
+          autocomplete={autocomplete}
+          inputmode={inputmode}
+          pattern={pattern}
+          min={min}
+          max={max}
+          maxlength={maxlength}
+          minlength={minlength}
+          class={fieldCls}
+        />
+      )
+    }
+  </div>
+  {
+    error ? (
+      <p class="mt-1.5 flex items-center gap-1.5 text-xs font-medium text-ink">
+        <Icon name="alert-circle" size={13} class="text-accent" />
+        {error}
+      </p>
+    ) : hint ? (
+      <p class="mt-1.5 text-xs text-muted">{hint}</p>
+    ) : null
+  }
+</div>

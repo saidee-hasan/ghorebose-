@@ -1,0 +1,33 @@
+---
+import AdminLayout from "@/layouts/AdminLayout.astro";
+import ToolForm from "@/components/admin/ToolForm";
+import Button from "@/components/ui/Button.astro";
+import { tools, getTool } from "@/data/tools";
+import { categories } from "@/data/categories";
+
+export function getStaticPaths() {
+  return tools.map((tool) => ({ params: { id: tool.slug } }));
+}
+
+const { id } = Astro.params;
+const tool = getTool(id!)!;
+const cats = categories.map((c) => ({ slug: c.slug, name: c.name }));
+---
+
+<AdminLayout
+  title={`Edit ${tool.name}`}
+  active="tools"
+  heading={`Edit ${tool.name}`}
+  description="Update pricing, plans, features and availability."
+>
+  <Fragment slot="actions">
+    <Button href={`/tools/${tool.slug}`} variant="outline" size="sm" icon="eye">
+      View listing
+    </Button>
+    <Button href="/admin/tools" variant="ghost" size="sm" icon="arrow-left">
+      Back
+    </Button>
+  </Fragment>
+
+  <ToolForm client:load categories={cats} tool={tool as any} mode="edit" />
+</AdminLayout>

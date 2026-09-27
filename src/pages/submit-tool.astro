@@ -1,0 +1,126 @@
+---
+import ContentPage from "@/layouts/ContentPage.astro";
+import Input from "@/components/ui/Input.astro";
+import Select from "@/components/ui/Select.astro";
+import Button from "@/components/ui/Button.astro";
+import Icon from "@/components/ui/Icon.astro";
+import { categories } from "@/data/categories";
+
+const catOptions = categories.map((c) => ({ value: c.slug, label: c.name }));
+
+const perks = [
+  { icon: "users", title: "Reach real buyers", text: "Thousands of customers browse ghorebose.com every week." },
+  { icon: "shield", title: "Verified payments", text: "We handle verification and delivery so you can focus on the product." },
+  { icon: "bar-chart", title: "Listing analytics", text: "See views, clicks and conversion for every tool you list." },
+  { icon: "headphones", title: "Seller support", text: "A dedicated team to help you price and position your tool." },
+];
+---
+
+<ContentPage
+  title="Submit a Tool"
+  description="Sell your AI tool on ghorebose.com. Tell us about it and our team will review your submission within 48 hours."
+  crumb="Submit a Tool"
+  narrow={false}
+>
+  <div class="grid gap-10 lg:grid-cols-[1.4fr_1fr]">
+    <div class="rounded-[20px] border border-line bg-white p-6 shadow-xs sm:p-8">
+      <h2 class="font-display text-lg font-bold text-ink">Tool details</h2>
+      <form class="mt-6 space-y-5" onsubmit="event.preventDefault();">
+        <div class="grid gap-5 sm:grid-cols-2">
+          <Input label="Tool name" name="toolName" placeholder="e.g. SuperWrite AI" required />
+          <Select label="Category" name="category" options={catOptions} placeholder="Choose a category" />
+        </div>
+        <Input
+          label="Website URL"
+          name="url"
+          type="url"
+          placeholder="https://yourtool.com"
+          required
+        />
+        <Input
+          label="Tagline"
+          name="tagline"
+          placeholder="One line that explains what it does"
+          required
+        />
+        <Input
+          label="Description"
+          name="description"
+          type="textarea"
+          placeholder="What does your tool do, who is it for, and what makes it different?"
+          required
+          rows={5}
+        />
+        <div class="grid gap-5 sm:grid-cols-2">
+          <Input label="Your name" name="name" placeholder="Your name" required />
+          <Input
+            label="Email"
+            name="email"
+            type="email"
+            placeholder="you@example.com"
+            required
+          />
+        </div>
+        <Input
+          label="Pricing"
+          name="pricing"
+          placeholder="e.g. Free / $10 per month"
+          hint="Tell us how you would like to price access on the marketplace."
+        />
+        <label class="flex cursor-pointer items-start gap-3 rounded-[12px] border border-line bg-surface-subtle p-4">
+          <input type="checkbox" required class="mt-0.5 h-4 w-4 accent-accent" />
+          <span class="text-[13px] leading-relaxed text-muted-strong">
+            I confirm I own or represent this tool and agree to the ghorebose.com
+            seller terms.
+          </span>
+        </label>
+        <Button type="submit" size="lg" icon="upload">Submit tool</Button>
+      </form>
+    </div>
+
+    <div class="space-y-6">
+      <div class="rounded-[16px] border border-line bg-surface-subtle p-6">
+        <h2 class="font-display text-base font-bold text-ink">
+          Why sell on ghorebose.com
+        </h2>
+        <ul class="mt-4 space-y-4">
+          {
+            perks.map((p) => (
+              <li class="flex gap-3">
+                <span class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-[10px] bg-white text-accent ring-1 ring-line">
+                  <Icon name={p.icon} size={18} />
+                </span>
+                <span>
+                  <span class="block text-sm font-bold text-ink">{p.title}</span>
+                  <span class="mt-0.5 block text-[13px] leading-relaxed text-muted">
+                    {p.text}
+                  </span>
+                </span>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <div class="rounded-[16px] border border-line bg-white p-6 shadow-xs">
+        <h3 class="text-sm font-bold text-ink">Review process</h3>
+        <ol class="mt-4 space-y-3">
+          {
+            [
+              "Submit your tool details",
+              "We review quality and pricing",
+              "Listing goes live in 48 hours",
+            ].map((s, i) => (
+              <li class="flex items-start gap-3 text-[13px] text-muted-strong">
+                <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-ink text-[11px] font-bold text-white">
+                  {i + 1}
+                </span>
+                {s}
+              </li>
+            ))
+          }
+        </ol>
+      </div>
+    </div>
+  </div>
+</ContentPage>

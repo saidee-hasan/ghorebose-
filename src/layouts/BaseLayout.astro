@@ -1,0 +1,70 @@
+---
+import "@/styles/global.css";
+import FloatingWhatsApp from "@/components/ui/FloatingWhatsApp.astro";
+
+interface Props {
+  title?: string;
+  description?: string;
+  noindex?: boolean;
+  bodyClass?: string;
+  canonical?: string;
+  hideWhatsApp?: boolean;
+}
+
+const {
+  title = "ghorebose.com — AI Tools Marketplace",
+  description = "Discover, compare and buy the best AI tools for work, study, business and creativity. AI Tools, All in One Place.",
+  noindex = false,
+  bodyClass = "",
+  canonical,
+  hideWhatsApp = false,
+} = Astro.props;
+
+const fullTitle = title.includes("ghorebose.com")
+  ? title
+  : `${title} | ghorebose.com`;
+const canonicalUrl = canonical
+  ? new URL(canonical, Astro.site).href
+  : new URL(Astro.url.pathname, Astro.site).href;
+---
+
+<!doctype html>
+<html lang="bn-BD" class="scroll-pt-24">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalUrl} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="ghorebose.com" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="theme-color" content="#F97316" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@500;600;700;800&family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Bengali:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body class={`min-h-screen flex flex-col bg-white text-ink ${bodyClass}`}>
+    <a
+      href="#main"
+      class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[100] focus:rounded-lg focus:bg-ink focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-white"
+    >
+      Skip to content
+    </a>
+    <slot />
+    {!hideWhatsApp && <FloatingWhatsApp />}
+  </body>
+</html>

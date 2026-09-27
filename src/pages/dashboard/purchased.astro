@@ -1,0 +1,51 @@
+---
+import DashboardLayout from "@/layouts/DashboardLayout.astro";
+import PurchasedToolCard from "@/components/dashboard/PurchasedToolCard.astro";
+import EmptyState from "@/components/ui/EmptyState.astro";
+import Button from "@/components/ui/Button.astro";
+import { getPurchasedOrders } from "@/data/orders";
+
+const purchased = getPurchasedOrders();
+---
+
+<DashboardLayout
+  title="Purchased Tools"
+  active="purchased"
+  heading="Purchased Tools"
+  description="All the AI tools you own. Open access details or renew before expiry."
+>
+  <Fragment slot="actions">
+    <Button href="/tools" icon="plus">Buy another tool</Button>
+  </Fragment>
+
+  {
+    purchased.length === 0 ? (
+      <EmptyState
+        icon="key"
+        title="No purchased tools yet"
+        description="Once your first order is verified, your tools and access details will appear here."
+      >
+        <Button href="/tools" class="mt-5" iconRight="arrow-right">
+          Browse AI tools
+        </Button>
+      </EmptyState>
+    ) : (
+      <>
+        <div class="mb-5 flex items-center gap-3 rounded-[14px] border border-line bg-white p-4 shadow-xs">
+          <span class="inline-flex h-9 w-9 items-center justify-center rounded-[10px] bg-surface-muted text-ink">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="15.5" r="5.5" /><path d="m21 2-9.6 9.6" /><path d="m15.5 7.5 3 3L22 7l-3-3" /></svg>
+          </span>
+          <p class="text-sm text-muted">
+            You own <span class="font-semibold text-ink">{purchased.length}</span>{" "}
+            tool{purchased.length > 1 ? "s" : ""}. Access details are shown on
+            each card once payment is verified.
+          </p>
+        </div>
+
+        <div class="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+          {purchased.map((o) => <PurchasedToolCard order={o} />)}
+        </div>
+      </>
+    )
+  }
+</DashboardLayout>

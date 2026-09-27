@@ -1,0 +1,36 @@
+---
+interface Props {
+  initials: string;
+  size?: "xs" | "sm" | "md" | "lg" | "xl";
+  variant?: "ink" | "brand" | "soft";
+  class?: string;
+}
+
+const { initials, size = "md", variant = "soft", class: className = "" } =
+  Astro.props;
+
+const sizes: Record<string, string> = {
+  xs: "h-6 w-6 text-[10px]",
+  sm: "h-8 w-8 text-[11px]",
+  md: "h-10 w-10 text-xs",
+  lg: "h-14 w-14 text-base",
+  xl: "h-20 w-20 text-2xl",
+};
+
+const variants: Record<string, string> = {
+  ink: "bg-ink text-white",
+  brand: "bg-accent text-white",
+  soft: "bg-surface-muted text-ink border border-line",
+};
+
+const cls = [
+  "inline-flex shrink-0 items-center justify-center rounded-full font-bold uppercase tracking-wide",
+  sizes[size],
+  variants[variant],
+  className,
+]
+  .filter(Boolean)
+  .join(" ");
+---
+
+<span class={cls}>{initials}</span>

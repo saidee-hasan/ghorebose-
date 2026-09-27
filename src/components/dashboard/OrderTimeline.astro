@@ -1,0 +1,52 @@
+---
+import Icon from "@/components/ui/Icon.astro";
+import { formatDateTime } from "@/lib/format";
+import type { OrderTimelineEvent } from "@/lib/types";
+
+interface Props {
+  events: OrderTimelineEvent[];
+  class?: string;
+}
+
+const { events, class: className = "" } = Astro.props;
+---
+
+<ol class:list={["relative", className]}>
+  {
+    events.map((e, i) => (
+      <li class="relative flex gap-4 pb-6 last:pb-0">
+        {i < events.length - 1 && (
+          <span
+            class:list={[
+              "absolute left-[13px] top-7 h-[calc(100%-1rem)] w-px",
+              e.done ? "bg-ink" : "bg-line",
+            ]}
+          />
+        )}
+        <span
+          class:list={[
+            "relative z-10 flex h-7 w-7 shrink-0 items-center justify-center rounded-full border-2",
+            e.done
+              ? "border-ink bg-ink text-white"
+              : "border-line bg-white text-muted",
+          ]}
+        >
+          <Icon name={e.done ? "check" : "circle"} size={13} />
+        </span>
+        <div class="pt-0.5">
+          <p
+            class:list={[
+              "text-sm font-semibold",
+              e.done ? "text-ink" : "text-muted",
+            ]}
+          >
+            {e.label}
+          </p>
+          <p class="mt-0.5 text-xs text-muted">
+            {e.at ? formatDateTime(e.at) : "Waiting"}
+          </p>
+        </div>
+      </li>
+    ))
+  }
+</ol>

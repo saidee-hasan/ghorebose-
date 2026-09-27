@@ -1,0 +1,565 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import Navbar from "@/components/layout/Navbar.astro";
+import Footer from "@/components/layout/Footer.astro";
+import Icon from "@/components/ui/Icon.astro";
+import Rating from "@/components/ui/Rating.astro";
+import { tools } from "@/data/tools";
+import { categories } from "@/data/categories";
+import { formatBDT } from "@/lib/format";
+
+// Top best selling tools for BD users
+const topBdTools = tools
+  .filter((t) => ["chatgpt-plus", "claude-pro", "midjourney", "canva-pro", "cursor-pro", "perplexity-pro", "elevenlabs", "capcut-pro"].includes(t.slug))
+  .slice(0, 8);
+
+const bnCategoryMap: Record<string, { bnName: string; bnDesc: string; icon: string }> = {
+  "ai-chat-assistant": { bnName: "চ্যাট ও এআই অ্যাসিস্ট্যান্ট", bnDesc: "ChatGPT, Claude, Gemini", icon: "chat" },
+  "ai-writing": { bnName: "রাইটিং ও কপিরাইটিং", bnDesc: "ব্লগ, স্ক্রিপ্ট ও কন্টেন্ট এআই", icon: "pen" },
+  "ai-image": { bnName: "এআই ইমেজ ও আর্ট", bnDesc: "Midjourney, DALL-E 3", icon: "image" },
+  "ai-video": { bnName: "ভিডিও ও অ্যানিমেশন", bnDesc: "AI ভিডিও এডিটিং ও মেকিং", icon: "video" },
+  "ai-coding": { bnName: "কোডিং ও ডেভেলপমেন্ট", bnDesc: "Cursor, GitHub Copilot", icon: "code" },
+  "ai-design": { bnName: "ডিজাইন ও গ্রাফিক্স", bnDesc: "Canva Pro, UI/UX টুলস", icon: "palette" },
+  "ai-voice": { bnName: "ভয়েসওভার ও অডিও", bnDesc: "ElevenLabs, টেক্সট-টু-স্পিচ", icon: "mic" },
+  "ai-productivity": { bnName: "প্রোডাক্টিভিটি ও নোটস", bnDesc: "Notion AI, পার্সোনাল কপাইলট", icon: "bolt" },
+};
+
+const topCategories = categories.filter((c) => bnCategoryMap[c.slug]).slice(0, 8);
+
+const testimonials = [
+  {
+    name: "তানভীর আহমেদ",
+    role: "Full-Stack Developer",
+    location: "মিরপুর, ঢাকা",
+    tool: "Cursor AI & Claude Pro",
+    rating: 5,
+    text: "ডুয়াল কারেন্সি কার্ড না থাকায় অনেকদিন ধরে Claude Pro আর Cursor AI কিনতে পারছিলাম না। ghorebose.com থেকে বিকাশে পেমেন্ট করার মাত্র ১৫ মিনিটেই একটিভেশন পেয়েছি। অসাধারণ সার্ভিস!",
+  },
+  {
+    name: "নুসরাত জাহান",
+    role: "UI/UX & Graphic Designer",
+    location: "জিইসি, চট্টগ্রাম",
+    tool: "Midjourney & Canva Pro",
+    rating: 5,
+    text: "ডিজাইনারদের জন্য Canva Pro এবং Midjourney লাইফসেভার। কম খরচে অরিজিনাল লাইসেন্স পেয়েছি এবং সাপোর্ট টিমের ব্যবহার খুবই আন্তরিক।",
+  },
+  {
+    name: "রাকিব হাসান",
+    role: "Freelance SEO & Content Specialist",
+    location: "সিলেট সদর",
+    tool: "ChatGPT Plus & Perplexity Pro",
+    rating: 5,
+    text: "ফ্রিল্যান্সিংয়ে প্রতিনিয়ত ChatGPT Plus লাগে। এখানে মাসিক রিনিউয়াল কোনো ঝামেলা ছাড়াই করা যায়। ১০০% ট্রাস্টেড ও নির্ভরযোগ্য।",
+  },
+  {
+    name: "সাদিয়া ইসলাম",
+    role: "Computer Science Student, DU",
+    location: "ধানমন্ডি, ঢাকা",
+    tool: "GitHub Copilot & Notion AI",
+    rating: 5,
+    text: "স্টুডেন্টদের জন্য প্রিমিয়াম AI টুলস কেনা অনেক ব্যয়বহুল ছিল। ghorebose-এর সাশ্রয়ী দাম এবং নগদ পেমেন্ট অপশন দারুণ কাজে দিয়েছে।",
+  },
+];
+
+const faqs = [
+  {
+    q: "বিকাশ বা নগদ দিয়ে কীভাবে AI টুলস অর্ডার করব?",
+    a: "আপনার পছন্দের টুলস সিলেক্ট করে 'Buy Now' ক্লিক করুন। এরপর সাবস্ক্রিপশন প্ল্যান বাছাই করে বিকাশ, নগদ বা রকেটে আমাদের পার্সোনাল নাম্বারে সেন্ড মানি করুন। পেমেন্ট শেষ হলে TrxID ও আপনার নাম্বার সাবমিট করলেই অর্ডার কনফার্ম হবে।",
+  },
+  {
+    q: "পেমেন্ট করার কতক্ষণ পর আমি এক্সেস পাব?",
+    a: "আমাদের অ্যাডমিন টিম পেমেন্ট ভেরিফাই করার সাথে সাথেই (সাধারণত ১০ থেকে ৩০ মিনিটের মধ্যে) আপনার ড্যাশবোর্ডে এবং ইমেইলে ফুল এক্সেস ক্রেডেনশিয়ালস বা অ্যাক্টিভেশন লিংক পাঠিয়ে দেওয়া হয়।",
+  },
+  {
+    q: "আমার কি আন্তর্জাতিক ডুয়াল কারেন্সি বা ক্রেডিট কার্ড লাগবে?",
+    a: "একদমই না! ghorebose.com তৈরিই করা হয়েছে যাতে বাংলাদেশের যে কেউ কোনো ভিসা/মাস্টারকার্ড বা পাসপোর্ট এনডোর্সমেন্ট ছাড়াই শুধু বিকাশ, নগদ বা রকেট দিয়ে আন্তর্জাতিক এআই টুলস কিনতে পারেন।",
+  },
+  {
+    q: "অ্যাকাউন্টে কোনো সমস্যা হলে কি রিপ্লেসমেন্ট ওয়ারেন্টি পাব?",
+    a: "হ্যাঁ, আপনার সাবস্ক্রিপশনের সম্পূর্ণ মেয়াদের জন্য আমাদের ১০০% ফুল রিপ্লেসমেন্ট গ্যারান্টি রয়েছে। কোনো টেকনিক্যাল ইস্যু হলে আমাদের WhatsApp হেল্পলাইনে জানালেই দ্রুত সমাধান বা নতুন অ্যাকাউন্ট দেওয়া হবে।",
+  },
+  {
+    q: "এগুলো কি অফিসিয়াল ও নিরাপদ অ্যাকাউন্ট?",
+    a: "হ্যাঁ, আমরা শুধুমাত্র ভেরিফাইড এবং সেফ অফিসিয়াল অ্যাকাউন্ট সরবরাহ করি। কোনো ক্র্যাক বা অবৈধ মেথড ব্যবহার করা হয় না, ফলে আপনার কাজের ডাটা সম্পূর্ণ সুরক্ষিত থাকে।",
+  },
+];
+---
+
+<BaseLayout
+  title="ghorebose.com — ঘরে বসেই বিকাশ ও নগদে কিনুন প্রিমিয়াম এআই টুলস"
+  description="বাংলাদেশের ১ নম্বর এআই মার্কেটপ্লেস। আন্তর্জাতিক কার্ড ছাড়াই বিকাশ, নগদ ও রকেটে কিনুন ChatGPT Plus, Claude Pro, Midjourney, Canva Pro ও ১০০+ সেরা AI Tools।"
+>
+  <Navbar />
+
+  <main id="main" class="flex-1">
+    <!-- ======================== 1. HERO SECTION ======================== -->
+    <section class="relative overflow-hidden border-b border-line bg-gradient-to-b from-brand-50/50 via-white to-white py-14 sm:py-20">
+      <!-- Decorative background blur circles -->
+      <div class="pointer-events-none absolute -top-24 left-1/2 -translate-x-1/2 h-96 w-[45rem] rounded-full bg-brand-100/40 blur-3xl" aria-hidden="true"></div>
+
+      <div class="container-page relative">
+        <div class="mx-auto max-w-3xl text-center">
+          <!-- Main Catchy Bilingual Headline (Exact 2 lines on mobile) -->
+          <h1 class="font-display text-[23px] min-[380px]:text-[26px] sm:text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-ink leading-[1.3] sm:leading-[1.25]">
+            <span class="block">ঘরে বসেই কিনুন বিশ্বের সেরা সব</span>
+            <span class="block text-accent">প্রিমিয়াম AI Tools</span>
+          </h1>
+
+          <!-- Value Proposition Subtitle -->
+          <p class="mt-5 text-base sm:text-lg leading-relaxed text-muted font-bangla max-w-2xl mx-auto">
+            কোনো আন্তর্জাতিক কার্ড ছাড়াই বিকাশ ও নগদে কিনুন ChatGPT Plus, Midjourney, Claude Pro, Canva Pro সহ সকল সেরা AI সাবস্ক্রিপশন।
+          </p>
+
+          <!-- Action Buttons -->
+          <div class="mt-8 flex flex-wrap items-center justify-center gap-3 sm:gap-4">
+            <a
+              href="/tools"
+              class="inline-flex h-12 items-center justify-center gap-2 rounded-[12px] bg-accent px-6 text-sm sm:text-base font-bold text-white shadow-md transition-all duration-200 hover:bg-accent-hover hover:shadow-lg hover:-translate-y-0.5"
+            >
+              <Icon name="cart" size={18} />
+              <span>টুলস ব্রাউজ করুন</span>
+            </a>
+
+            <a
+              href="https://wa.me/8801712345678?text=%E0%A6%86%E0%A6%B8%E0%A6%B8%E0%A6%BE%E0%A6%B2%E0%A6%BE%E0%A6%AE%E0%A7%81%20%E0%A6%86%E0%A6%B2%E0%A6%BE%E0%A6%87%E0%A6%95%E0%A7%81%E0%A6%AE!%20%E0%A6%8F%E0%A6%86%E0%A6%87%20%E0%A6%9F%E0%A7%81%E0%A6%B2%E0%A6%B8%20%E0%A6%95%E0%A6%BF%E0%A6%A8%E0%A6%A4%E0%A7%87%20%E0%A6%9A%E0%A6%BE%E0%A6%9A%E0%A7%8D%E0%A6%9B%E0%A6%BF%E0%A5%A4"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex h-12 items-center justify-center gap-2 rounded-[12px] border border-emerald-300 bg-white px-5 text-sm sm:text-base font-bold text-emerald-700 shadow-xs transition-all duration-200 hover:bg-emerald-50 hover:border-emerald-400"
+            >
+              <Icon name="whatsapp" size={18} class="text-emerald-600" />
+              <span>WhatsApp-এ অর্ডার দিন</span>
+            </a>
+          </div>
+
+          <!-- Popular Search Tags for BD Users -->
+          <div class="mt-8 flex flex-wrap items-center justify-center gap-2 text-sm">
+            <span class="font-bangla font-semibold text-muted text-xs sm:text-sm">জনপ্রিয়:</span>
+            {["ChatGPT Plus", "Claude Pro", "Midjourney", "Canva Pro", "Cursor AI", "CapCut Pro"].map((tag) => (
+              <a
+                href={`/tools?q=${encodeURIComponent(tag)}`}
+                class="rounded-full border border-line bg-white px-3 py-1 text-xs sm:text-sm text-muted-strong transition-colors hover:border-accent hover:text-accent font-medium shadow-xs"
+              >
+                {tag}
+              </a>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================== 2. TOP TRENDING / BEST-SELLING TOOLS ======================== -->
+    <section class="section border-b border-line bg-white">
+      <div class="container-page">
+        <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
+          <div>
+            <div class="inline-flex items-center gap-1.5 rounded-full bg-brand-50 px-3 py-1 text-xs font-bold text-brand-700 border border-brand-200">
+              <Icon name="flame" size={14} />
+              <span class="font-bangla">সেরা পছন্দের টুলস</span>
+            </div>
+            <h2 class="mt-2 font-display text-2xl sm:text-3xl font-extrabold tracking-tight text-ink">
+              বাংলাদেশে সবচেয়ে জনপ্রিয় এআই টুলস
+            </h2>
+            <p class="mt-1 text-sm sm:text-base text-muted font-bangla">
+              ফ্রিল্যান্সার, কন্টেন্ট ক্রিয়েটর, ডেভেলপার ও শিক্ষার্থীদের পছন্দের টপ রেটেড সাবস্ক্রিপশন
+            </p>
+          </div>
+          <a
+            href="/tools?sort=popular"
+            class="inline-flex items-center gap-1 text-sm font-bold text-accent hover:text-accent-hover transition-colors font-bangla"
+          >
+            <span>সব সেরা টুলস দেখুন</span>
+            <Icon name="chevron-right" size={16} />
+          </a>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">
+          {topBdTools.map((t) => {
+            const discount = t.compareAtPrice
+              ? Math.round((1 - t.price / t.compareAtPrice) * 100)
+              : 0;
+            return (
+              <div class="group flex flex-col overflow-hidden rounded-[14px] sm:rounded-[18px] border border-line bg-white shadow-xs transition-all duration-200 hover:-translate-y-1 hover:border-line-strong hover:shadow-lg">
+                <a href={`/tools/${t.slug}`} class="relative block aspect-[16/11] overflow-hidden bg-surface-subtle">
+                  <img
+                    src={`/covers/${t.slug}.svg`}
+                    alt={t.name}
+                    width="800"
+                    height="500"
+                    loading="lazy"
+                    class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
+                  />
+                  <div class="absolute left-2 sm:left-3 top-2 sm:top-3 flex flex-col gap-1 sm:gap-1.5">
+                    {t.isFree ? (
+                      <span class="rounded-full bg-accent px-2 sm:px-2.5 py-0.5 text-[9px] sm:text-xs font-bold text-white shadow-sm uppercase">Free</span>
+                    ) : discount > 0 ? (
+                      <span class="rounded-full bg-ink px-2 sm:px-2.5 py-0.5 text-[9px] sm:text-xs font-bold text-white shadow-sm">−{discount}%</span>
+                    ) : null}
+                  </div>
+                  <div class="absolute right-2 sm:right-3 top-2 sm:top-3">
+                    <span class="inline-flex items-center gap-1 rounded-full bg-white/95 px-2 py-0.5 text-[9px] sm:text-[10px] font-bold text-emerald-800 shadow-xs backdrop-blur font-bangla">
+                      <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
+                      স্টক: {t.stock || 15}
+                    </span>
+                  </div>
+                </a>
+
+                <div class="flex flex-1 flex-col p-3 sm:p-4">
+                  <div class="flex items-center justify-between gap-1">
+                    <span class="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-accent truncate">
+                      {t.category.replace("ai-", "").replace("-", " ")}
+                    </span>
+                    <Rating rating={t.rating} size={12} showValue />
+                  </div>
+
+                  <h3 class="mt-1.5 font-display text-xs sm:text-[16px] font-extrabold text-ink group-hover:text-accent transition-colors truncate">
+                    <a href={`/tools/${t.slug}`}>{t.name}</a>
+                  </h3>
+
+                  <div class="mt-2.5 flex items-baseline justify-between border-t border-line pt-2">
+                    <div>
+                      <span class="font-display text-sm sm:text-xl font-extrabold text-accent">
+                        {t.isFree ? "Free" : formatBDT(t.price)}
+                      </span>
+                      {!t.isFree && <span class="text-[10px] sm:text-xs text-muted">/{t.duration || "Month"}</span>}
+                    </div>
+                    {t.compareAtPrice && (
+                      <span class="text-[10px] sm:text-xs text-muted line-through">{formatBDT(t.compareAtPrice)}</span>
+                    )}
+                  </div>
+
+                  <div class="mt-3 grid grid-cols-2 gap-1.5 sm:gap-2">
+                    <a
+                      href={`/tools/${t.slug}`}
+                      class="inline-flex h-8 sm:h-9 items-center justify-center rounded-[8px] sm:rounded-[10px] border border-line bg-white text-[11px] sm:text-xs font-semibold text-ink transition-colors hover:bg-surface-subtle"
+                    >
+                      Details
+                    </a>
+                    <a
+                      href={`/checkout/${t.slug}`}
+                      class="inline-flex h-8 sm:h-9 items-center justify-center gap-1 rounded-[8px] sm:rounded-[10px] bg-accent text-[11px] sm:text-xs font-bold text-white transition-colors hover:bg-accent-hover shadow-xs"
+                    >
+                      <span>Buy Now</span>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================== 3. POPULAR CATEGORIES ======================== -->
+    <section class="section border-b border-line bg-surface-subtle">
+      <div class="container-page">
+        <div class="text-center max-w-2xl mx-auto mb-10">
+          <span class="inline-block font-bangla text-xs font-bold uppercase tracking-wider text-accent bg-brand-50 px-3 py-1 rounded-full border border-brand-200">
+            ক্যাটাগরি সমূহ
+          </span>
+          <h2 class="mt-3 font-display text-2xl sm:text-3xl font-extrabold tracking-tight text-ink">
+            আপনার প্রয়োজনীয় কাজের ক্যাটাগরি বেছে নিন
+          </h2>
+          <p class="mt-2 text-sm sm:text-base text-muted font-bangla">
+            কন্টেন্ট লেখা, ছবি ও ভিডিও তৈরি, প্রোগ্রামিং থেকে শুরু করে সব ধরণের কাজের জন্য ডেডিকেটেড এআই টুলস
+          </p>
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {topCategories.map((c) => {
+            const meta = bnCategoryMap[c.slug];
+            return (
+              <a
+                href={`/category/${c.slug}`}
+                class="group flex items-start gap-3.5 rounded-[16px] border border-line bg-white p-4 shadow-xs transition-all duration-200 hover:-translate-y-0.5 hover:border-accent hover:shadow-md"
+              >
+                <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-[12px] bg-brand-50 text-accent transition-colors group-hover:bg-accent group-hover:text-white">
+                  <Icon name={meta?.icon || c.icon} size={22} />
+                </span>
+                <div class="min-w-0">
+                  <h3 class="font-bangla font-bold text-sm sm:text-base text-ink group-hover:text-accent transition-colors">
+                    {meta?.bnName || c.name}
+                  </h3>
+                  <p class="mt-0.5 text-xs text-muted truncate">{c.name}</p>
+                  <p class="mt-1 font-bangla text-xs text-muted-strong line-clamp-1">{meta?.bnDesc}</p>
+                </div>
+              </a>
+            );
+          })}
+        </div>
+
+        <div class="mt-8 text-center">
+          <a
+            href="/tools"
+            class="inline-flex items-center gap-1.5 rounded-[10px] border border-line bg-white px-5 py-2.5 text-sm font-bold text-ink shadow-xs transition-colors hover:bg-surface-subtle font-bangla"
+          >
+            <span>সকল এআই টুলস দেখুন</span>
+            <Icon name="arrow-right" size={14} />
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================== 6. HOW IT WORKS (3 EASY STEPS) ======================== -->
+    <section class="section border-b border-line bg-surface-subtle">
+      <div class="container-page">
+        <div class="text-center max-w-2xl mx-auto mb-12">
+          <span class="font-bangla text-xs font-bold uppercase tracking-wider text-accent bg-brand-50 px-3 py-1 rounded-full border border-brand-200">
+            অর্ডার প্রসেস
+          </span>
+          <h2 class="mt-3 font-display text-2xl sm:text-3xl font-extrabold tracking-tight text-ink">
+            কীভাবে ৩টি সহজ ধাপে অর্ডার করবেন?
+          </h2>
+          <p class="mt-2 text-sm sm:text-base text-muted font-bangla">
+            কোনো জটিলতা ছাড়াই মাত্র কয়েক মিনিটে আপনার এআই টুলস সাবস্ক্রিপশন চালু করুন
+          </p>
+        </div>
+
+        <div class="grid gap-6 md:grid-cols-3">
+          <!-- Step 1 -->
+          <div class="relative rounded-[20px] border border-line bg-white p-6 shadow-xs">
+            <div class="flex items-center justify-between">
+              <span class="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-50 text-accent font-display text-xl font-black">
+                ০১
+              </span>
+              <span class="rounded-full bg-surface-muted px-2.5 py-1 text-xs font-bold text-muted-strong font-bangla">
+                ধাপ ১
+              </span>
+            </div>
+            <h3 class="mt-5 font-bangla text-lg font-bold text-ink">টুলস ও প্ল্যান পছন্দ করুন</h3>
+            <p class="mt-2 font-bangla text-sm text-muted leading-relaxed">
+              আপনার কাঙ্ক্ষিত AI টুলসটি খুঁজুন এবং আপনার বাজেট ও সময় অনুযায়ী সাবস্ক্রিপশন প্ল্যান (যেমন: ১ মাস, ৩ মাস ইত্যাদি) বেছে নিন।
+            </p>
+          </div>
+
+          <!-- Step 2 -->
+          <div class="relative rounded-[20px] border border-brand-300 bg-white p-6 shadow-xs ring-2 ring-brand-100">
+            <div class="flex items-center justify-between">
+              <span class="flex h-12 w-12 items-center justify-center rounded-2xl bg-accent text-white font-display text-xl font-black shadow-sm">
+                ০২
+              </span>
+              <span class="rounded-full bg-brand-50 px-2.5 py-1 text-xs font-bold text-brand-700 border border-brand-200 font-bangla">
+                ধাপ ২ (পেমেন্ট)
+              </span>
+            </div>
+            <h3 class="mt-5 font-bangla text-lg font-bold text-ink">বিকাশ/নগদে সেন্ড মানি করুন</h3>
+            <p class="mt-2 font-bangla text-sm text-muted leading-relaxed">
+              আমাদের প্রদর্শিত বিকাশ বা নগদ নাম্বারে নির্দিষ্ট ফি সেন্ড মানি করুন এবং চেকআউট ফর্মে আপনার পেমেন্ট নাম্বার ও TrxID সাবমিট করুন।
+            </p>
+          </div>
+
+          <!-- Step 3 -->
+          <div class="relative rounded-[20px] border border-line bg-white p-6 shadow-xs">
+            <div class="flex items-center justify-between">
+              <span class="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-600 font-display text-xl font-black">
+                ০৩
+              </span>
+              <span class="rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-bold text-emerald-700 font-bangla">
+                ধাপ ৩ (এক্সেস)
+              </span>
+            </div>
+            <h3 class="mt-5 font-bangla text-lg font-bold text-ink">দ্রুত এক্সেস বুঝে নিন</h3>
+            <p class="mt-2 font-bangla text-sm text-muted leading-relaxed">
+              অ্যাডমিন টিম পেমেন্ট ভেরিফাই করার সাথে সাথেই (১০-৩০ মিনিট) আপনার ড্যাশবোর্ডে ও ইমেইলে ফুল এক্সেস পেয়ে যাবেন।
+            </p>
+          </div>
+        </div>
+
+        <div class="mt-10 flex flex-wrap items-center justify-center gap-4 font-bangla">
+          <a
+            href="/payment-help"
+            class="inline-flex items-center gap-2 rounded-[10px] border border-line bg-white px-5 py-3 text-sm font-bold text-ink shadow-xs hover:bg-surface-subtle transition-colors"
+          >
+            <Icon name="banknote" size={16} class="text-accent" />
+            <span>বিস্তারিত পেমেন্ট গাইড দেখুন</span>
+          </a>
+          <a
+            href="https://wa.me/8801712345678"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center gap-2 rounded-[10px] bg-emerald-600 px-5 py-3 text-sm font-bold text-white shadow-xs hover:bg-emerald-700 transition-colors"
+          >
+            <Icon name="whatsapp" size={16} />
+            <span>অর্ডারে সাহায্য লাগলে WhatsApp করুন</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================== 7. WHY CHOOSE GHOREBOSE (BD ADVANTAGES) ======================== -->
+    <section class="section border-b border-line bg-white">
+      <div class="container-page">
+        <div class="text-center max-w-2xl mx-auto mb-12">
+          <span class="font-bangla text-xs font-bold uppercase tracking-wider text-accent bg-brand-50 px-3 py-1 rounded-full border border-brand-200">
+            আমাদের বৈশিষ্ট্য
+          </span>
+          <h2 class="mt-3 font-display text-2xl sm:text-3xl font-extrabold tracking-tight text-ink">
+            কেন ghorebose.com বাংলাদেশের সেরা?
+          </h2>
+          <p class="mt-2 text-sm sm:text-base text-muted font-bangla">
+            আমরা নিশ্চিত করি সবচেয়ে নিরাপদ, সাশ্রয়ী এবং দ্রুততম AI টুলস ডেলিভারি অভিজ্ঞতা
+          </p>
+        </div>
+
+        <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div class="rounded-[18px] border border-line bg-white p-6 shadow-xs hover:border-line-strong transition-colors">
+            <span class="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-50 text-accent">
+              <Icon name="credit-card" size={24} />
+            </span>
+            <h3 class="mt-4 font-bangla text-base sm:text-lg font-bold text-ink">ডুয়াল কারেন্সি কার্ডের প্রয়োজন নেই</h3>
+            <p class="mt-2 font-bangla text-sm text-muted leading-relaxed">
+              কোনো ব্যাংক ক্রেডিট কার্ড, পাসপোর্ট এনডোর্সমেন্ট বা ডলার পেমেন্টের ঝামেলা ছাড়াই বিকাশ ও নগদ দিয়ে সরাসরি টাকায় পেমেন্ট করুন।
+            </p>
+          </div>
+
+          <div class="rounded-[18px] border border-line bg-white p-6 shadow-xs hover:border-line-strong transition-colors">
+            <span class="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-50 text-accent">
+              <Icon name="banknote" size={24} />
+            </span>
+            <h3 class="mt-4 font-bangla text-base sm:text-lg font-bold text-ink">সর্বোচ্চ সাশ্রয়ী বিডিটি রেট</h3>
+            <p class="mt-2 font-bangla text-sm text-muted leading-relaxed">
+              সরাসরি অফিশিয়াল আন্তর্জাতিক মূল্যের তুলনায় অনেক কম খরচে সাবস্ক্রিপশন নিশ্চিত করে যা স্টুডেন্ট ও ফ্রিল্যান্সারদের জন্য উপযুক্ত।
+            </p>
+          </div>
+
+          <div class="rounded-[18px] border border-line bg-white p-6 shadow-xs hover:border-line-strong transition-colors">
+            <span class="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-50 text-accent">
+              <Icon name="zap" size={24} />
+            </span>
+            <h3 class="mt-4 font-bangla text-base sm:text-lg font-bold text-ink">১০–৩০ মিনিটে ইনস্ট্যান্ট ডেলিভারি</h3>
+            <p class="mt-2 font-bangla text-sm text-muted leading-relaxed">
+              আমাদের টিম দ্রুততম সময়ে আপনার পেমেন্ট কনফার্ম করে এবং সাথে সাথে ড্যাশবোর্ডে ও ইমেইলে সার্ভিস চালু করে দেয়।
+            </p>
+          </div>
+
+          <div class="rounded-[18px] border border-line bg-white p-6 shadow-xs hover:border-line-strong transition-colors">
+            <span class="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-50 text-accent">
+              <Icon name="shield-check" size={24} />
+            </span>
+            <h3 class="mt-4 font-bangla text-base sm:text-lg font-bold text-ink">ফুল রিপ্লেসমেন্ট ওয়ারেন্টি</h3>
+            <p class="mt-2 font-bangla text-sm text-muted leading-relaxed">
+              আপনার সম্পূর্ণ সাবস্ক্রিপশন মেয়াদের জন্য ফুল রিপ্লেসমেন্ট গ্যারান্টি। কোনো সমস্যা দেখা দিলে তাৎক্ষণিক সল্যুশন প্রদান করা হয়।
+            </p>
+          </div>
+
+          <div class="rounded-[18px] border border-line bg-white p-6 shadow-xs hover:border-line-strong transition-colors">
+            <span class="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-50 text-accent">
+              <Icon name="whatsapp" size={24} />
+            </span>
+            <h3 class="mt-4 font-bangla text-base sm:text-lg font-bold text-ink">২৪/৭ সরাসরি বাংলা WhatsApp সাপোর্ট</h3>
+            <p class="mt-2 font-bangla text-sm text-muted leading-relaxed">
+              যেকোনো জিজ্ঞাসা বা সমস্যায় সরাসরি বাংলায় আমাদের অভিজ্ঞ সাপোর্ট টিমের সাথে কথা বলে দ্রুত সমাধান পান।
+            </p>
+          </div>
+
+          <div class="rounded-[18px] border border-line bg-white p-6 shadow-xs hover:border-line-strong transition-colors">
+            <span class="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-50 text-accent">
+              <Icon name="lock" size={24} />
+            </span>
+            <h3 class="mt-4 font-bangla text-base sm:text-lg font-bold text-ink">১০০% সিকিউর ও প্রাইভেট এক্সেস</h3>
+            <p class="mt-2 font-bangla text-sm text-muted leading-relaxed">
+              আপনার ব্যক্তিগত ডাটা ও ব্যবহারের গোপনীয়তা সম্পূর্ণ সুরক্ষিত থাকে। বিশ্বস্ত ও ভেরিফাইড ক্রেডেনশিয়ালস প্রদান করা হয়।
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================== 8. CUSTOMER TESTIMONIALS (BD USERS) ======================== -->
+    <section class="section border-b border-line bg-surface-subtle">
+      <div class="container-page">
+        <div class="text-center max-w-2xl mx-auto mb-12">
+          <span class="font-bangla text-xs font-bold uppercase tracking-wider text-accent bg-brand-50 px-3 py-1 rounded-full border border-brand-200">
+            গ্রাহকদের অভিজ্ঞতা
+          </span>
+          <h2 class="mt-3 font-display text-2xl sm:text-3xl font-extrabold tracking-tight text-ink">
+            বাংলাদেশের ফ্রিল্যান্সার ও শিক্ষার্থীদের সন্তুষ্টি
+          </h2>
+          <p class="mt-2 text-sm sm:text-base text-muted font-bangla">
+            ১৫,০০০+ হ্যাপি কাস্টমারের আস্থা ও ভালোবাসায় আমরা এগিয়ে চলেছি
+          </p>
+        </div>
+
+        <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          {testimonials.map((review) => (
+            <div class="flex flex-col justify-between rounded-[18px] border border-line bg-white p-5 shadow-xs">
+              <div>
+                <div class="flex items-center justify-between">
+                  <Rating rating={review.rating} size={14} />
+                  <span class="inline-flex items-center gap-1 rounded bg-emerald-50 px-2.5 py-0.5 text-xs font-bold text-emerald-700 font-bangla">
+                    <Icon name="check-circle" size={12} /> ভেরিফাইড
+                  </span>
+                </div>
+                <p class="mt-3 font-bangla text-sm text-muted-strong leading-relaxed">
+                  "{review.text}"
+                </p>
+              </div>
+
+              <div class="mt-4 border-t border-line pt-3">
+                <p class="font-bangla text-sm font-bold text-ink">{review.name}</p>
+                <p class="text-xs text-muted">{review.role} • {review.location}</p>
+                <p class="mt-1 font-display text-xs font-semibold text-accent">{review.tool}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================== 9. BD USER FAQ ======================== -->
+    <section class="section border-b border-line bg-white">
+      <div class="container-page">
+        <div class="grid gap-10 lg:grid-cols-[1fr_1.5fr] lg:items-start">
+          <div>
+            <span class="font-bangla text-xs font-bold uppercase tracking-wider text-accent bg-brand-50 px-3 py-1 rounded-full border border-brand-200">
+              সাধারণ জিজ্ঞাসাবলী (FAQ)
+            </span>
+            <h2 class="mt-3 font-display text-2xl sm:text-3xl font-extrabold tracking-tight text-ink">
+              আপনার মনে কি কোনো প্রশ্ন আছে?
+            </h2>
+            <p class="mt-3 text-sm sm:text-base leading-relaxed text-muted font-bangla">
+              আমাদের সার্ভিস, পেমেন্ট ও ডেলিভারি সম্পর্কে সর্বাধিক জিজ্ঞাসিত প্রশ্নের উত্তর এখানে পেয়ে যাবেন।
+            </p>
+
+            <div class="mt-6 rounded-[16px] border border-emerald-200 bg-emerald-50/70 p-5">
+              <div class="flex items-center gap-3">
+                <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500 text-white">
+                  <Icon name="whatsapp" size={20} />
+                </span>
+                <div>
+                  <p class="text-sm font-bold text-emerald-900 font-bangla">সরাসরি কথা বলতে চান?</p>
+                  <p class="text-xs text-emerald-700">আমাদের WhatsApp সাপোর্ট সবসময় সচল</p>
+                </div>
+              </div>
+              <a
+                href="https://wa.me/8801712345678"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="mt-4 inline-flex h-11 w-full items-center justify-center gap-1.5 rounded-[10px] bg-emerald-600 text-sm font-bold text-white transition-colors hover:bg-emerald-700 shadow-xs font-bangla"
+              >
+                <span>WhatsApp-এ মেসেজ দিন</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="space-y-3">
+            {faqs.map((f, i) => (
+              <details class="group rounded-[14px] border border-line bg-surface-subtle p-4 transition-colors open:border-line-strong open:bg-white">
+                <summary class="flex cursor-pointer items-center justify-between gap-3 text-sm sm:text-base font-bold text-ink font-bangla list-none">
+                  <span>{f.q}</span>
+                  <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white text-muted ring-1 ring-line transition-transform group-open:rotate-180">
+                    <Icon name="chevron-down" size={14} />
+                  </span>
+                </summary>
+                <p class="mt-3 font-bangla text-sm leading-relaxed text-muted border-t border-line/60 pt-3">
+                  {f.a}
+                </p>
+              </details>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</BaseLayout>

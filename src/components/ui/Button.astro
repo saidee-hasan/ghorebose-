@@ -1,0 +1,86 @@
+---
+import Icon from "./Icon.astro";
+
+interface Props {
+  href?: string;
+  variant?: "primary" | "secondary" | "outline" | "ghost" | "subtle";
+  size?: "sm" | "md" | "lg" | "icon" | "icon-sm";
+  icon?: string;
+  iconRight?: string;
+  block?: boolean;
+  disabled?: boolean;
+  type?: "button" | "submit" | "reset";
+  class?: string;
+  target?: string;
+  rel?: string;
+  title?: string;
+  id?: string;
+  "aria-label"?: string;
+  "data-tool"?: string;
+  "data-plan"?: string;
+}
+
+const {
+  href,
+  variant = "primary",
+  size = "md",
+  icon,
+  iconRight,
+  block = false,
+  disabled = false,
+  type = "button",
+  class: className = "",
+  ...rest
+} = Astro.props;
+
+const base =
+  "inline-flex items-center justify-center gap-2 font-semibold whitespace-nowrap rounded-[10px] transition-colors duration-150 focus-ring select-none";
+
+const variants: Record<string, string> = {
+  primary:
+    "bg-accent text-white hover:bg-accent-hover active:bg-brand-700 shadow-xs",
+  secondary:
+    "bg-ink text-white hover:bg-ink-soft active:bg-black shadow-xs",
+  outline:
+    "border border-line bg-white text-ink hover:bg-surface-subtle hover:border-line-strong",
+  ghost: "text-ink hover:bg-surface-muted",
+  subtle: "bg-brand-50 text-brand-700 hover:bg-brand-100 border border-brand-100",
+};
+
+const sizes: Record<string, string> = {
+  sm: "h-9 px-3.5 text-[13px]",
+  md: "h-11 px-5 text-sm",
+  lg: "h-12 px-6 text-[15px]",
+  icon: "h-10 w-10 p-0",
+  "icon-sm": "h-9 w-9 p-0",
+};
+
+const cls = [
+  base,
+  variants[variant],
+  sizes[size],
+  block ? "w-full" : "",
+  disabled ? "opacity-50 pointer-events-none" : "",
+  className,
+]
+  .filter(Boolean)
+  .join(" ");
+
+const iconSize = size === "lg" ? 18 : size === "sm" ? 15 : 16;
+---
+
+{
+  href ? (
+    <a href={disabled ? undefined : href} class={cls} {...rest}>
+      {icon && <Icon name={icon} size={iconSize} />}
+      <slot />
+      {iconRight && <Icon name={iconRight} size={iconSize} />}
+    </a>
+  ) : (
+    <button type={type} class={cls} disabled={disabled} {...rest}>
+      {icon && <Icon name={icon} size={iconSize} />}
+      <slot />
+      {iconRight && <Icon name={iconRight} size={iconSize} />}
+    </button>
+  )
+}

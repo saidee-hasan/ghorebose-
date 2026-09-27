@@ -1,0 +1,52 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+import Navbar from "@/components/layout/Navbar.astro";
+import Footer from "@/components/layout/Footer.astro";
+import Breadcrumbs from "@/components/ui/Breadcrumbs.astro";
+
+interface Props {
+  title: string;
+  description: string;
+  crumb?: string;
+  updated?: string;
+  narrow?: boolean;
+}
+
+const { title, description, crumb, updated, narrow = true } = Astro.props;
+---
+
+<BaseLayout title={title} description={description}>
+  <Navbar />
+
+  <main id="main" class="flex-1">
+    <div class="border-b border-line bg-surface-subtle">
+      <div class="container-page py-10 sm:py-12">
+        <Breadcrumbs
+          items={[
+            { label: "Home", href: "/" },
+            { label: crumb ?? title },
+          ]}
+        />
+        <h1
+          class="mt-4 font-display text-3xl font-extrabold tracking-tight text-ink sm:text-4xl"
+        >
+          {title}
+        </h1>
+        <p class="mt-3 max-w-2xl text-sm leading-relaxed text-muted sm:text-base">
+          {description}
+        </p>
+        {
+          updated && (
+            <p class="mt-3 text-xs text-muted">Last updated {updated}</p>
+          )
+        }
+      </div>
+    </div>
+
+    <div class:list={["container-page py-10 sm:py-14", narrow && "max-w-3xl"]}>
+      <slot />
+    </div>
+  </main>
+
+  <Footer />
+</BaseLayout>

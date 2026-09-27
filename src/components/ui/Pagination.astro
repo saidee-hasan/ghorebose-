@@ -1,0 +1,62 @@
+---
+import Icon from "./Icon.astro";
+
+interface Props {
+  current: number;
+  total: number;
+  base?: string;
+  class?: string;
+}
+
+const { current, total, base = "?page=", class: className = "" } = Astro.props;
+
+function pageHref(p: number) {
+  if (base.includes("{page}")) return base.replace("{page}", String(p));
+  if (base.includes("?page=")) return `${base}${p}`;
+  return `${base}?page=${p}`;
+}
+
+const pages = Array.from({ length: total }, (_, i) => i + 1);
+const cls = ["flex items-center justify-center gap-1.5", className]
+  .filter(Boolean)
+  .join(" ");
+---
+
+<nav class={cls} aria-label="Pagination">
+  <a
+    href={pageHref(Math.max(1, current - 1))}
+    aria-disabled={current === 1}
+    class:list={[
+      "inline-flex h-9 w-9 items-center justify-center rounded-[10px] border border-line bg-white text-ink transition-colors hover:bg-surface-subtle",
+      current === 1 && "pointer-events-none opacity-40",
+    ]}
+  >
+    <Icon name="chevron-left" size={16} />
+  </a>
+  {
+    pages.map((p) => (
+      <a
+        href={pageHref(p)}
+        class:list={[
+          "inline-flex h-9 min-w-9 items-center justify-center rounded-[10px] border px-3 text-sm font-semibold transition-colors",
+          p === current
+            ? "border-accent bg-accent text-white"
+            : "border-line bg-white text-ink hover:bg-surface-subtle",
+        ]}
+        aria-current={p === current ? "page" : undefined}
+      >
+        {p}
+      </a>
+    ))
+  }
+  <a
+    href={pageHref(Math.min(total, current + 1))}
+    aria-disabled={current === total}
+    class:list={[
+      "inline-flex h-9 w-9 items-center justify-center rounded-[10px] border border-line bg-white text-ink transition-colors hover:bg-surface-subtle",
+      current === total && "pointer-events-none opacity-40",
+    ]}
+  >
+    <Icon name="chevron-right" size={16} />
+  </a>
+</nav>

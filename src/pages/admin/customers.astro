@@ -1,0 +1,96 @@
+---
+import AdminLayout from "@/layouts/AdminLayout.astro";
+import StatCard from "@/components/dashboard/StatCard.astro";
+import Avatar from "@/components/ui/Avatar.astro";
+import Button from "@/components/ui/Button.astro";
+import Icon from "@/components/ui/Icon.astro";
+import { customers } from "@/data/customers";
+import { formatBDT, formatDate } from "@/lib/format";
+import { initials } from "@/lib/utils";
+
+const stats = [
+  { label: "Total customers", value: String(customers.length), icon: "users", accent: true },
+  { label: "Active", value: String(customers.filter((c) => c.status === "active").length), icon: "check-circle" },
+  { label: "Blocked", value: String(customers.filter((c) => c.status === "blocked").length), icon: "x-circle" },
+  { label: "Lifetime value", value: formatBDT(customers.reduce((s, c) => s + c.spent, 0)), icon: "dollar" },
+];
+---
+
+<AdminLayout
+  title="Customers"
+  active="customers"
+  heading="Customers"
+  description="Everyone who has purchased on the marketplace."
+>
+  <Fragment slot="actions">
+    <Button href="#" variant="outline" icon="download">Export</Button>
+  </Fragment>
+
+  <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+    {stats.map((s) => <StatCard {...s} />)}
+  </div>
+
+  <div class="mt-6 overflow-hidden rounded-[16px] border border-line bg-white shadow-xs">
+    <div class="overflow-x-auto">
+      <table class="w-full min-w-[820px] text-left text-sm">
+        <thead>
+          <tr class="border-b border-line bg-surface-subtle text-[11px] font-bold uppercase tracking-[0.08em] text-muted">
+            <th class="px-5 py-3.5">Customer</th>
+            <th class="px-5 py-3.5">Phone</th>
+            <th class="px-5 py-3.5">Orders</th>
+            <th class="px-5 py-3.5">Total spent</th>
+            <th class="px-5 py-3.5">Joined</th>
+            <th class="px-5 py-3.5">Status</th>
+            <th class="px-5 py-3.5 text-right">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-line">
+          {
+            customers.map((c) => (
+              <tr class="transition-colors hover:bg-surface-subtle">
+                <td class="px-5 py-4">
+                  <div class="flex items-center gap-3">
+                    <Avatar initials={initials(c.name)} size="sm" />
+                    <div>
+                      <p class="font-semibold text-ink">{c.name}</p>
+                      <p class="text-xs text-muted">{c.email}</p>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-5 py-4 text-muted">{c.phone}</td>
+                <td class="px-5 py-4 font-semibold text-ink">{c.orders}</td>
+                <td class="px-5 py-4 font-semibold text-ink">{formatBDT(c.spent)}</td>
+                <td class="px-5 py-4 text-muted">{formatDate(c.joined)}</td>
+                <td class="px-5 py-4">
+                  <span
+                    class:list={[
+                      "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[11px] font-bold",
+                      c.status === "active"
+                        ? "border-ink bg-ink text-white"
+                        : "border-line bg-surface-muted text-muted-strong",
+                    ]}
+                  >
+                    {c.status === "active" ? "Active" : "Blocked"}
+                  </span>
+                </td>
+                <td class="px-5 py-4">
+                  <div class="flex items-center justify-end gap-1">
+                    <button type="button" aria-label="View" class="inline-flex h-8 w-8 items-center justify-center rounded-[8px] border border-line text-muted transition-colors hover:bg-surface-subtle hover:text-ink">
+                      <Icon name="eye" size={15} />
+                    </button>
+                    <button type="button" aria-label="Message" class="inline-flex h-8 w-8 items-center justify-center rounded-[8px] border border-line text-muted transition-colors hover:bg-surface-subtle hover:text-ink">
+                      <Icon name="mail" size={15} />
+                    </button>
+                    <button type="button" aria-label="More" class="inline-flex h-8 w-8 items-center justify-center rounded-[8px] border border-line text-muted transition-colors hover:bg-surface-subtle hover:text-ink">
+                      <Icon name="more-horizontal" size={15} />
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</AdminLayout>

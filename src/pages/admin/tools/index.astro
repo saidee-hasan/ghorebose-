@@ -1,0 +1,23 @@
+---
+import AdminLayout from "@/layouts/AdminLayout.astro";
+import AdminToolsTable from "@/components/admin/AdminToolsTable";
+import Button from "@/components/ui/Button.astro";
+import { tools } from "@/data/tools";
+import { categories } from "@/data/categories";
+
+const cats = categories.map((c) => ({ slug: c.slug, name: c.name }));
+---
+
+<AdminLayout
+  title="Manage Tools"
+  active="tools"
+  heading="Tools"
+  description="Add, edit, publish and manage every AI tool on the marketplace."
+>
+  <Fragment slot="actions">
+    <Button href="/admin/categories" variant="outline" icon="tag">Categories</Button>
+    <Button href="/admin/tools/new" icon="plus">Add Tool</Button>
+  </Fragment>
+
+  <AdminToolsTable client:load tools={tools as any} categories={cats} />
+</AdminLayout>

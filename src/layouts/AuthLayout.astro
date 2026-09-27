@@ -1,0 +1,107 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+import Icon from "@/components/ui/Icon.astro";
+
+interface Props {
+  title: string;
+  heading: string;
+  subtitle: string;
+}
+
+const { title, heading, subtitle } = Astro.props;
+
+const bullets = [
+  "Buy premium AI tools with bKash, Nagad or Rocket",
+  "Track orders and subscriptions in one dashboard",
+  "Get access delivered in under 30 minutes",
+];
+---
+
+<BaseLayout title={title} bodyClass="bg-white">
+  <div class="grid min-h-screen lg:grid-cols-2">
+    <!-- Brand panel -->
+    <aside
+      class="relative hidden flex-col justify-between overflow-hidden bg-ink p-10 lg:flex"
+    >
+      <div
+        class="pointer-events-none absolute inset-0 opacity-20"
+        style="background-image:radial-gradient(circle at 15% 15%, #F97316 0, transparent 40%), radial-gradient(circle at 85% 85%, #F97316 0, transparent 45%);"
+      >
+      </div>
+      <a
+        href="/"
+        class="relative font-display text-xl font-extrabold tracking-tight text-white"
+      >
+        ghorebose<span class="text-accent">.com</span>
+      </a>
+
+      <div class="relative max-w-md">
+        <h2 class="font-display text-3xl font-extrabold leading-tight tracking-tight text-white">
+          AI Tools, All in One Place
+        </h2>
+        <p class="mt-4 text-sm leading-relaxed text-white/70">
+          Join thousands of professionals, students and businesses buying
+          premium AI access with local payment methods.
+        </p>
+        <ul class="mt-8 space-y-4">
+          {
+            bullets.map((b) => (
+              <li class="flex items-start gap-3 text-sm text-white/85">
+                <span class="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-accent text-white">
+                  <Icon name="check" size={12} />
+                </span>
+                {b}
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <div class="relative flex items-center gap-3 rounded-[16px] border border-white/10 bg-white/5 p-4">
+        <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-accent text-xs font-bold text-white">
+          TA
+        </span>
+        <div>
+          <p class="text-[13px] text-white/85">
+            “Delivered in under 20 minutes. Everything worked first try.”
+          </p>
+          <p class="mt-1 text-xs font-semibold text-white/50">
+            Tanvir A. — verified buyer
+          </p>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Form panel -->
+    <main class="flex flex-col">
+      <div class="flex items-center justify-between p-5 lg:justify-end">
+        <a
+          href="/"
+          class="font-display text-lg font-extrabold tracking-tight text-ink lg:hidden"
+        >
+          ghorebose<span class="text-accent">.com</span>
+        </a>
+        <a
+          href="/"
+          class="text-sm font-semibold text-muted transition-colors hover:text-ink"
+        >
+          ← Back to store
+        </a>
+      </div>
+
+      <div class="flex flex-1 items-center justify-center px-5 pb-12">
+        <div class="w-full max-w-md">
+          <h1
+            class="font-display text-2xl font-extrabold tracking-tight text-ink sm:text-3xl"
+          >
+            {heading}
+          </h1>
+          <p class="mt-2 text-sm text-muted">{subtitle}</p>
+          <div class="mt-8">
+            <slot />
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</BaseLayout>

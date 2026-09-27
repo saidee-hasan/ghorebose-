@@ -1,0 +1,45 @@
+---
+import Icon from "./Icon.astro";
+
+interface Props {
+  variant?: "brand" | "ink" | "outline" | "muted" | "soft";
+  size?: "sm" | "md";
+  icon?: string;
+  class?: string;
+  dot?: boolean;
+}
+
+const {
+  variant = "muted",
+  size = "sm",
+  icon,
+  class: className = "",
+  dot = false,
+} = Astro.props;
+
+const base =
+  "inline-flex items-center gap-1.5 font-semibold rounded-full border whitespace-nowrap";
+
+const variants: Record<string, string> = {
+  brand: "bg-brand-50 text-brand-700 border-brand-200",
+  ink: "bg-ink text-white border-ink",
+  outline: "bg-white text-ink border-line-strong",
+  muted: "bg-surface-muted text-muted-strong border-line",
+  soft: "bg-white text-muted border-line",
+};
+
+const sizes: Record<string, string> = {
+  sm: "px-2.5 py-0.5 text-[11px] tracking-wide",
+  md: "px-3 py-1 text-xs",
+};
+
+const cls = [base, variants[variant], sizes[size], className]
+  .filter(Boolean)
+  .join(" ");
+---
+
+<span class={cls}>
+  {dot && <span class="h-1.5 w-1.5 rounded-full bg-current" />}
+  {icon && <Icon name={icon} size={12} />}
+  <slot />
+</span>

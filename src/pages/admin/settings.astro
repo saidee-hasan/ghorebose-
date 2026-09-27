@@ -1,0 +1,155 @@
+---
+import AdminLayout from "@/layouts/AdminLayout.astro";
+import Input from "@/components/ui/Input.astro";
+import Button from "@/components/ui/Button.astro";
+import Toggle from "@/components/ui/Toggle.astro";
+import Icon from "@/components/ui/Icon.astro";
+
+const paymentAccounts = [
+  { method: "bKash", number: "01712-345678", type: "Personal" },
+  { method: "Nagad", number: "01812-345678", type: "Personal" },
+  { method: "Rocket", number: "01912-345678", type: "Personal" },
+];
+
+const integrations = [
+  { name: "emailNotifications", label: "Email notifications", description: "Send order and verification emails.", checked: true },
+  { name: "smsAlerts", label: "SMS alerts", description: "Notify customers when access is delivered.", checked: false },
+  { name: "autoDelivery", label: "Auto-delivery", description: "Deliver access automatically once payment is verified.", checked: true },
+  { name: "maintenance", label: "Maintenance mode", description: "Temporarily hide the storefront.", checked: false },
+];
+---
+
+<AdminLayout
+  title="Admin Settings"
+  active="settings"
+  heading="Settings"
+  description="Marketplace configuration, payment accounts and store preferences."
+>
+  <Fragment slot="actions">
+    <Button href="#" variant="outline" size="sm">Discard</Button>
+    <Button href="#" size="sm" icon="check">Save changes</Button>
+  </Fragment>
+
+  <div class="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-start">
+    <div class="space-y-6">
+      <!-- Store -->
+      <section class="rounded-[16px] border border-line bg-white p-5 shadow-xs sm:p-6">
+        <h2 class="font-display text-base font-bold text-ink">Store information</h2>
+        <div class="mt-5 grid gap-5 sm:grid-cols-2">
+          <Input label="Store name" name="storeName" value="ghorebose.com" />
+          <Input label="Support email" name="supportEmail" type="email" value="support@ghorebose.com" />
+          <Input label="Support phone" name="supportPhone" value="+880 1712 345678" />
+          <Input label="Currency" name="currency" value="BDT (৳)" readonly />
+        </div>
+        <div class="mt-5">
+          <Input
+            label="Tagline"
+            name="tagline"
+            value="AI Tools, All in One Place"
+          />
+        </div>
+      </section>
+
+      <!-- Payment accounts -->
+      <section class="rounded-[16px] border border-line bg-white p-5 shadow-xs sm:p-6">
+        <div class="flex items-center justify-between">
+          <h2 class="font-display text-base font-bold text-ink">Payment accounts</h2>
+          <Button href="#" variant="outline" size="sm" icon="plus">Add account</Button>
+        </div>
+        <p class="mt-1 text-sm text-muted">
+          These numbers are shown to customers at checkout.
+        </p>
+        <div class="mt-5 space-y-3">
+          {
+            paymentAccounts.map((p) => (
+              <div class="flex flex-wrap items-center gap-4 rounded-[12px] border border-line p-4">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-[10px] bg-accent text-sm font-extrabold text-white">
+                  {p.method[0]}
+                </span>
+                <div class="min-w-0 flex-1">
+                  <p class="text-sm font-bold text-ink">{p.method}</p>
+                  <p class="font-mono text-sm text-muted">{p.number}</p>
+                </div>
+                <span class="rounded-full border border-line bg-surface-muted px-2.5 py-0.5 text-[11px] font-semibold text-muted-strong">
+                  {p.type}
+                </span>
+                <button type="button" aria-label="Edit" class="inline-flex h-8 w-8 items-center justify-center rounded-[8px] border border-line text-muted transition-colors hover:bg-surface-subtle hover:text-ink">
+                  <Icon name="edit" size={15} />
+                </button>
+              </div>
+            ))
+          }
+        </div>
+      </section>
+
+      <!-- Preferences -->
+      <section class="rounded-[16px] border border-line bg-white p-5 shadow-xs sm:p-6">
+        <h2 class="font-display text-base font-bold text-ink">Operations</h2>
+        <div class="mt-5 space-y-3">
+          {integrations.map((i) => <Toggle {...i} />)}
+        </div>
+      </section>
+
+      <!-- Policies -->
+      <section class="rounded-[16px] border border-line bg-white p-5 shadow-xs sm:p-6">
+        <h2 class="font-display text-base font-bold text-ink">Policies & content</h2>
+        <div class="mt-5 grid gap-5">
+          <Input
+            label="Delivery promise"
+            name="delivery"
+            value="Access delivered within 30 minutes of payment verification."
+          />
+          <Input
+            label="Refund summary"
+            name="refund"
+            value="Full refund if we cannot verify payment or deliver access."
+          />
+          <Input
+            label="Announcement bar"
+            name="announcement"
+            placeholder="e.g. Eid sale — 20% off all tools"
+            hint="Leave empty to hide the announcement bar."
+          />
+        </div>
+      </section>
+    </div>
+
+    <aside class="space-y-4 lg:sticky lg:top-24">
+      <div class="rounded-[16px] border border-line bg-white p-5 shadow-xs">
+        <h2 class="font-display text-base font-bold text-ink">Admin team</h2>
+        <div class="mt-4 space-y-3">
+          {
+            [
+              { name: "Admin Team", email: "admin@ghorebose.com", role: "Owner" },
+              { name: "Support", email: "support@ghorebose.com", role: "Manager" },
+            ].map((a) => (
+              <div class="flex items-center gap-3">
+                <span class="inline-flex h-9 w-9 items-center justify-center rounded-full bg-ink text-[11px] font-bold text-white">
+                  {a.name.split(" ").map((n) => n[0]).join("").slice(0, 2)}
+                </span>
+                <div class="min-w-0">
+                  <p class="truncate text-[13px] font-semibold text-ink">{a.name}</p>
+                  <p class="truncate text-[11px] text-muted">{a.email}</p>
+                </div>
+                <span class="ml-auto shrink-0 text-[11px] font-semibold text-muted">{a.role}</span>
+              </div>
+            ))
+          }
+        </div>
+        <Button href="#" variant="outline" size="sm" block class="mt-4" icon="user-plus">
+          Invite admin
+        </Button>
+      </div>
+
+      <div class="rounded-[16px] border border-line bg-surface-subtle p-5">
+        <div class="flex items-start gap-3">
+          <Icon name="shield" size={18} class="mt-0.5 shrink-0 text-accent" />
+          <p class="text-[13px] leading-relaxed text-muted">
+            Changes to payment accounts affect live checkout. Review carefully
+            before saving.
+          </p>
+        </div>
+      </div>
+    </aside>
+  </div>
+</AdminLayout>

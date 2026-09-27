@@ -1,0 +1,109 @@
+---
+import ContentPage from "@/layouts/ContentPage.astro";
+import Prose from "@/components/ui/Prose.astro";
+import Icon from "@/components/ui/Icon.astro";
+import Button from "@/components/ui/Button.astro";
+import { tools } from "@/data/tools";
+import { categories } from "@/data/categories";
+
+const values = [
+  { icon: "shield", title: "১০০% নির্ভরযোগ্যতা (Trust First)", text: "প্রতিটি পেমেন্ট এবং অ্যাকাউন্ট যত্নসহকারে ভেরিফাই করে ক্রেডেনশিয়ালস প্রদান করা হয়।" },
+  { icon: "tag", title: "সাশ্রয়ী বিডিটি মূল্য (Local Pricing)", text: "আন্তর্জাতিক কার্ড ও ডলারের উচ্চ এক্সচেঞ্জ রেটের ঝামেলা ছাড়াই শিক্ষার্থীদের উপযোগী মূল্যে সাবস্ক্রিপশন।" },
+  { icon: "zap", title: "সুপারফাস্ট ডেলিভারি (Instant Speed)", text: "অধিকাংশ অর্ডার ১০ থেকে ৩০ মিনিটের মধ্যে সক্রিয় করা হয়, সপ্তাহে ৭ দিনই।" },
+  { icon: "headphones", title: "বাংলা লাইভ সাপোর্ট (Dedicated Support)", text: "WhatsApp এবং ফোনের মাধ্যমে সরাসরি আন্তরিক বাংলা কাস্টমার সাপোর্ট।" },
+];
+
+const stats = [
+  { value: `${tools.length}+`, label: "এআই টুলস কালেকশন" },
+  { value: `${categories.length}`, label: "ক্যাটাগরি" },
+  { value: "১৫,০০০+", label: "সফল অর্ডার ডেলিভারি" },
+  { value: "৪.৯ / ৫", label: "গ্রাহক সন্তুষ্টি রেটিং" },
+];
+---
+
+<ContentPage
+  title="আমাদের সম্পর্কে — ghorebose.com (ঘরে বসে)"
+  description="বাংলাদেশের ফ্রিল্যান্সার, শিক্ষার্থী ও পেশাদারদের জন্য বিশ্বমানের এআই টুলস সহজে পাওয়ার বিশ্বস্ত মার্কেটপ্লেস।"
+  crumb="আমাদের সম্পর্কে"
+  narrow={false}
+>
+  <div class="grid gap-12 lg:grid-cols-[1.3fr_1fr]">
+    <Prose>
+      <h2>আমাদের লক্ষ্য ও উদ্দেশ্য (Our Mission)</h2>
+      <p>
+        <strong>ghorebose.com (ঘরে বসে)</strong>-এর মূল লক্ষ্য হলো প্রযুক্তির অগ্রগতিতে বাংলাদেশের তরুণ প্রজন্ম, ফ্রিল্যান্সার, ডেভেলপার ও শিক্ষার্থীদের বিশ্বমানের এআই টুলসের সাথে সহজে যুক্ত করা। আন্তর্জাতিক পেমেন্ট মেথড যেমন ক্রেডিট কার্ড বা পাসপোর্ট এনডোর্সমেন্ট না থাকার কারণে অনেকেই ChatGPT Plus, Midjourney, Claude Pro বা Cursor AI-এর মতো অত্যাবশ্যকীয় টুলস ব্যবহার করতে সমস্যায় পড়তেন।
+      </p>
+      <p>
+        আমরা এমন একটি ওয়ান-স্টপ মার্কেটপ্লেস তৈরি করেছি যেখানে যে কেউ ঘরে বসেই বিকাশ, নগদ বা রকেট দিয়ে সাশ্রয়ী মূল্যে, সম্পূর্ণ নিরাপদ ও দ্রুততম সময়ে যেকোনো এআই সাবস্ক্রিপশন চালু করে নিতে পারেন।
+      </p>
+
+      <h2>আমরা যা অফার করি</h2>
+      <p>
+        আমাদের প্ল্যাটফর্মে রয়েছে {categories.length}টি ক্যাটাগরির শতাধিক বিশ্বসেরা এআই টুলস — লেখালেখি, ছবি আঁকা, ভিডিও এডিটিং, অডিও ও ভয়েসওভার, কোডিং অ্যাসিস্ট্যান্ট থেকে শুরু করে প্রোডাক্টিভিটি ও বিজনেস অটোমেশন। প্রতিটি টুলসের সাথে পাচ্ছেন বিস্তারিত ফিচার তালিকা, সাশ্রয়ী প্ল্যান ও সম্পূর্ণ মেয়াদের ওয়ারেন্টি।
+      </p>
+      <p>
+        আমাদের টিম নিয়মিত প্রতিটি সার্ভিসের কোয়ালিটি পর্যবেক্ষণ করে। কোনো অ্যাকাউন্টে সমস্যা হলে আমরা তাৎক্ষণিক রিপ্লেসমেন্ট বা ফুল রিফান্ডের নিশ্চয়তা প্রদান করি।
+      </p>
+
+      <h2>কীভাবে আমরা কাজ করি?</h2>
+      <ol>
+        <li>আপনি আপনার প্রয়োজনীয় টুলস ও সাবস্ক্রিপশন প্ল্যান নির্বাচন করুন।</li>
+        <li>বিকাশ, নগদ বা রকেটে সেন্ড মানি করে ট্রানজেকশন আইডি (TrxID) দিন।</li>
+        <li>আমাদের টিম দ্রুত ভেরিফিকেশন সম্পন্ন করে (১০-৩০ মিনিট)।</li>
+        <li>আপনার ড্যাশবোর্ডে ও ইমেইলে ফুল এক্সেস পেয়ে যাবেন।</li>
+      </ol>
+    </Prose>
+
+    <div class="space-y-6">
+      <div class="grid grid-cols-2 gap-4">
+        {
+          stats.map((s) => (
+            <div class="rounded-[16px] border border-line bg-white p-5 text-center shadow-xs">
+              <p class="font-display text-2xl font-extrabold tracking-tight text-accent">
+                {s.value}
+              </p>
+              <p class="mt-1 font-bangla text-xs text-muted font-medium">{s.label}</p>
+            </div>
+          ))
+        }
+      </div>
+
+      <div class="rounded-[16px] border border-line bg-white p-6 shadow-xs">
+        <h2 class="font-display text-base font-bold text-ink font-bangla">আমাদের মূল অঙ্গীকার</h2>
+        <ul class="mt-4 space-y-4">
+          {
+            values.map((v) => (
+              <li class="flex gap-3">
+                <span class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-[10px] bg-brand-50 text-accent">
+                  <Icon name={v.icon} size={18} />
+                </span>
+                <div>
+                  <span class="block font-bangla text-sm font-bold text-ink">{v.title}</span>
+                  <span class="mt-0.5 block font-bangla text-xs leading-relaxed text-muted">
+                    {v.text}
+                  </span>
+                </div>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <div class="rounded-[16px] border border-line bg-neutral-900 p-6 text-center text-white">
+        <h2 class="font-display text-lg font-extrabold text-white font-bangla">
+          আজই শুরু করুন আপনার AI জার্নি
+        </h2>
+        <p class="mt-2 text-xs font-bangla text-white/70">
+          ১০০+ প্রিমিয়াম টুলস, বিকাশ ও নগদে সহজ পেমেন্ট
+        </p>
+        <Button
+          href="/tools"
+          class="mt-5 bg-accent text-white hover:bg-accent-hover"
+          block
+        >
+          সব টুলস ব্রাউজ করুন
+        </Button>
+      </div>
+    </div>
+  </div>
+</ContentPage>

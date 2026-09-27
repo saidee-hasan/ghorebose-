@@ -1,0 +1,136 @@
+---
+import Icon from "@/components/ui/Icon.astro";
+import SearchDialog from "@/components/react/SearchDialog";
+import UserMenu from "@/components/react/UserMenu";
+import MobileNav from "@/components/react/MobileNav";
+import { tools } from "@/data/tools";
+import { categories } from "@/data/categories";
+import { currentUser } from "@/data/orders";
+
+interface Props {
+  active?: string;
+  auth?: "guest" | "user";
+}
+
+const { active = "", auth = "guest" } = Astro.props;
+
+const searchTools = tools.map((t) => ({
+  slug: t.slug,
+  name: t.name,
+  tagline: t.tagline,
+  category: t.category,
+  tags: t.tags,
+  mark: t.mark,
+  tone: t.tone,
+  price: t.price,
+  isFree: t.isFree,
+  trending: t.trending,
+}));
+
+const searchCats = categories.map((c) => ({ slug: c.slug, name: c.name }));
+---
+
+<header class="sticky top-0 z-40 border-b border-line bg-white/95 backdrop-blur-md">
+  <div class="container-page">
+    <div class="flex h-16 items-center justify-between gap-4">
+      <!-- Left: Logo & Nav -->
+      <div class="flex items-center gap-6 lg:gap-8">
+        <a
+          href="/"
+          class="font-display text-xl font-extrabold tracking-tight text-ink sm:text-2xl shrink-0"
+        >
+          ghorebose<span class="text-accent">.com</span>
+        </a>
+
+        <!-- Clean Desktop Navigation Links -->
+        <nav class="hidden md:flex items-center gap-6 text-sm font-semibold text-muted-strong">
+          <a
+            href="/tools"
+            class:list={[
+              "font-bangla transition-colors hover:text-accent",
+              active === "tools" ? "text-accent font-bold" : "text-muted-strong",
+            ]}
+          >
+            সব টুলস
+          </a>
+          <a
+            href="/payment-help"
+            class:list={[
+              "font-bangla transition-colors hover:text-accent",
+              active === "payment-help" ? "text-accent font-bold" : "text-muted-strong",
+            ]}
+          >
+            পেমেন্ট নিয়ম
+          </a>
+          <a
+            href="/contact"
+            class:list={[
+              "font-bangla transition-colors hover:text-accent",
+              active === "contact" ? "text-accent font-bold" : "text-muted-strong",
+            ]}
+          >
+            যোগাযোগ
+          </a>
+        </nav>
+      </div>
+
+      <!-- Right: Search, Auth & Mobile Menu -->
+      <div class="flex items-center gap-2 sm:gap-3">
+        <!-- Search Trigger -->
+        <SearchDialog
+          client:load
+          tools={searchTools as any}
+          categories={searchCats}
+        />
+
+        {
+          auth === "guest" ? (
+            <div class="hidden sm:flex items-center gap-2">
+              <a
+                href="/login"
+                class="rounded-[10px] px-3.5 py-2 text-sm font-semibold text-muted-strong transition-colors hover:bg-surface-subtle hover:text-ink"
+              >
+                লগইন
+              </a>
+              <a
+                href="/signup"
+                class="inline-flex h-9 items-center justify-center rounded-[10px] bg-accent px-4 text-xs sm:text-sm font-bold text-white shadow-xs transition-all hover:bg-accent-hover hover:shadow-sm"
+              >
+                অ্যাকাউন্ট খুলুন
+              </a>
+            </div>
+          ) : (
+            <div class="flex items-center gap-2">
+              <button
+                type="button"
+                aria-label="Notifications"
+                class="relative inline-flex h-9 w-9 items-center justify-center rounded-[10px] text-ink transition-colors hover:bg-surface-muted"
+              >
+                <Icon name="bell" size={18} />
+                <span class="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-accent ring-2 ring-white"></span>
+              </button>
+              <UserMenu
+                client:load
+                name={currentUser.name}
+                email={currentUser.email}
+                initials={currentUser.initials}
+              />
+            </div>
+          )
+        }
+
+        <!-- Mobile Drawer Trigger -->
+        <MobileNav
+          client:load
+          authed={auth === "user"}
+          user={{
+            name: currentUser.name,
+            email: currentUser.email,
+            initials: currentUser.initials,
+          }}
+        />
+      </div>
+    </div>
+  </div>
+</header>
+

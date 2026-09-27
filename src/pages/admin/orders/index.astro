@@ -1,0 +1,19 @@
+---
+import AdminLayout from "@/layouts/AdminLayout.astro";
+import AdminOrdersTable from "@/components/admin/AdminOrdersTable";
+import Button from "@/components/ui/Button.astro";
+import { orders } from "@/data/orders";
+---
+
+<AdminLayout
+  title="Orders"
+  active="orders"
+  heading="Orders"
+  description="Review orders, verify payments and track delivery."
+>
+  <Fragment slot="actions">
+    <Button href="#" variant="outline" icon="download">Export</Button>
+  </Fragment>
+
+  <AdminOrdersTable client:load orders={orders as any} />
+</AdminLayout>

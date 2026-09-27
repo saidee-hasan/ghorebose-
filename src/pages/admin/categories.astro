@@ -1,0 +1,123 @@
+---
+import AdminLayout from "@/layouts/AdminLayout.astro";
+import Icon from "@/components/ui/Icon.astro";
+import Button from "@/components/ui/Button.astro";
+import Input from "@/components/ui/Input.astro";
+import { categories } from "@/data/categories";
+import { tools } from "@/data/tools";
+import { CATEGORY_GROUPS } from "@/lib/types";
+
+const rows = categories.map((c) => ({
+  ...c,
+  count: tools.filter((t) => t.category === c.slug).length,
+  revenue: tools
+    .filter((t) => t.category === c.slug)
+    .reduce((s, t) => s + t.price, 0),
+}));
+
+const groupOptions = CATEGORY_GROUPS.map((g) => ({ value: g, label: g }));
+---
+
+<AdminLayout
+  title="Categories"
+  active="categories"
+  heading="Categories"
+  description="Organise the marketplace into clear, browsable categories."
+>
+  <Fragment slot="actions">
+    <Button href="/categories" variant="outline" icon="eye">View public page</Button>
+  </Fragment>
+
+  <div class="grid gap-6 xl:grid-cols-[minmax(0,1fr)_340px] xl:items-start">
+    <div class="overflow-hidden rounded-[16px] border border-line bg-white shadow-xs">
+      <div class="overflow-x-auto">
+        <table class="w-full min-w-[680px] text-left text-sm">
+          <thead>
+            <tr class="border-b border-line bg-surface-subtle text-[11px] font-bold uppercase tracking-[0.08em] text-muted">
+              <th class="px-5 py-3.5">Category</th>
+              <th class="px-5 py-3.5">Group</th>
+              <th class="px-5 py-3.5">Tools</th>
+              <th class="px-5 py-3.5">Listed value</th>
+              <th class="px-5 py-3.5 text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-line">
+            {
+              rows.map((c) => (
+                <tr class="transition-colors hover:bg-surface-subtle">
+                  <td class="px-5 py-4">
+                    <div class="flex items-center gap-3">
+                      <span class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-[10px] bg-surface-muted text-ink">
+                        <Icon name={c.icon} size={17} />
+                      </span>
+                      <div>
+                        <p class="font-semibold text-ink">{c.name}</p>
+                        <p class="text-xs text-muted">/{c.slug}</p>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-5 py-4">
+                    <span class="rounded-full border border-line bg-surface-muted px-2.5 py-0.5 text-[11px] font-semibold text-muted-strong">
+                      {c.group}
+                    </span>
+                  </td>
+                  <td class="px-5 py-4 font-semibold text-ink">{c.count}</td>
+                  <td class="px-5 py-4 text-muted">৳{c.revenue.toLocaleString()}</td>
+                  <td class="px-5 py-4">
+                    <div class="flex items-center justify-end gap-1">
+                      <a
+                        href={`/category/${c.slug}`}
+                        aria-label="View"
+                        class="inline-flex h-8 w-8 items-center justify-center rounded-[8px] border border-line text-muted transition-colors hover:bg-surface-subtle hover:text-ink"
+                      >
+                        <Icon name="eye" size={15} />
+                      </a>
+                      <button
+                        type="button"
+                        aria-label="Edit"
+                        class="inline-flex h-8 w-8 items-center justify-center rounded-[8px] border border-line text-muted transition-colors hover:bg-surface-subtle hover:text-ink"
+                      >
+                        <Icon name="edit" size={15} />
+                      </button>
+                      <button
+                        type="button"
+                        aria-label="Delete"
+                        class="inline-flex h-8 w-8 items-center justify-center rounded-[8px] border border-line text-muted transition-colors hover:bg-surface-subtle hover:text-ink"
+                      >
+                        <Icon name="trash" size={15} />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <aside class="rounded-[16px] border border-line bg-white p-5 shadow-xs">
+      <h2 class="font-display text-base font-bold text-ink">Add category</h2>
+      <form class="mt-4 space-y-4" onsubmit="event.preventDefault();">
+        <Input label="Name" name="name" placeholder="e.g. AI Agents" required />
+        <Input label="Slug" name="slug" placeholder="ai-agents" required />
+        <Input
+          label="Description"
+          name="description"
+          type="textarea"
+          placeholder="Short description for the category page"
+          rows={3}
+        />
+        <div>
+          <label class="mb-1.5 block text-[13px] font-semibold text-ink">Group</label>
+          <select
+            class="h-12 w-full rounded-[10px] border border-line bg-white px-4 text-sm text-ink outline-none transition-colors hover:border-line-strong focus:border-accent"
+          >
+            {groupOptions.map((g) => <option value={g.value}>{g.label}</option>)}
+          </select>
+        </div>
+        <Button type="submit" block icon="plus">Add category</Button>
+      </form>
+    </aside>
+  </div>
+</AdminLayout>

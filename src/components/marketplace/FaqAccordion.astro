@@ -1,0 +1,26 @@
+---
+import Icon from "@/components/ui/Icon.astro";
+
+interface Props {
+  faq: { q: string; a: string }[];
+  class?: string;
+}
+
+const { faq, class: className = "" } = Astro.props;
+---
+
+<div class:list={["divide-y divide-line rounded-[16px] border border-line bg-white", className]}>
+  {
+    faq.map((item) => (
+      <details class="group px-5 py-4 sm:px-6">
+        <summary class="flex cursor-pointer list-none items-center justify-between gap-4 text-left">
+          <span class="font-display text-[15px] font-bold text-ink">{item.q}</span>
+          <span class="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-line text-muted transition-transform duration-200 group-open:rotate-45 group-open:border-accent group-open:text-accent">
+            <Icon name="plus" size={15} />
+          </span>
+        </summary>
+        <p class="mt-3 max-w-3xl text-sm leading-relaxed text-muted">{item.a}</p>
+      </details>
+    ))
+  }
+</div>

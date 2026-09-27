@@ -1,0 +1,23 @@
+---
+import AdminLayout from "@/layouts/AdminLayout.astro";
+import ToolForm from "@/components/admin/ToolForm";
+import Button from "@/components/ui/Button.astro";
+import { categories } from "@/data/categories";
+
+const cats = categories.map((c) => ({ slug: c.slug, name: c.name }));
+---
+
+<AdminLayout
+  title="Add Tool"
+  active="tools"
+  heading="Add a new tool"
+  description="Create a complete listing with pricing, plans, features and FAQ."
+>
+  <Fragment slot="actions">
+    <Button href="/admin/tools" variant="outline" size="sm" icon="arrow-left">
+      Back to tools
+    </Button>
+  </Fragment>
+
+  <ToolForm client:load categories={cats} mode="new" />
+</AdminLayout>

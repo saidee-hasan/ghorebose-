@@ -1,0 +1,74 @@
+---
+import AdminLayout from "@/layouts/AdminLayout.astro";
+import Button from "@/components/ui/Button.astro";
+import Icon from "@/components/ui/Icon.astro";
+import { blogPosts } from "@/data/blog";
+import { formatDate } from "@/lib/format";
+---
+
+<AdminLayout
+  title="Blog"
+  active="blog"
+  heading="Blog"
+  description="Write and publish guides, comparisons and marketplace news."
+>
+  <Fragment slot="actions">
+    <Button href="#" icon="plus">New post</Button>
+  </Fragment>
+
+  <div class="overflow-hidden rounded-[16px] border border-line bg-white shadow-xs">
+    <div class="overflow-x-auto">
+      <table class="w-full min-w-[820px] text-left text-sm">
+        <thead>
+          <tr class="border-b border-line bg-surface-subtle text-[11px] font-bold uppercase tracking-[0.08em] text-muted">
+            <th class="px-5 py-3.5">Title</th>
+            <th class="px-5 py-3.5">Category</th>
+            <th class="px-5 py-3.5">Author</th>
+            <th class="px-5 py-3.5">Published</th>
+            <th class="px-5 py-3.5">Status</th>
+            <th class="px-5 py-3.5 text-right">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-line">
+          {
+            blogPosts.map((p) => (
+              <tr class="transition-colors hover:bg-surface-subtle">
+                <td class="px-5 py-4">
+                  <a href={`/blog/${p.slug}`} class="font-semibold text-ink hover:text-accent">
+                    {p.title}
+                  </a>
+                  <p class="text-xs text-muted">{p.readTime}</p>
+                </td>
+                <td class="px-5 py-4">
+                  <span class="rounded-full border border-line bg-surface-muted px-2.5 py-0.5 text-[11px] font-semibold text-muted-strong">
+                    {p.category}
+                  </span>
+                </td>
+                <td class="px-5 py-4 text-muted">{p.author}</td>
+                <td class="px-5 py-4 text-muted">{formatDate(p.date)}</td>
+                <td class="px-5 py-4">
+                  <span class="inline-flex items-center gap-1.5 rounded-full border border-ink bg-ink px-2.5 py-0.5 text-[11px] font-bold text-white">
+                    Published
+                  </span>
+                </td>
+                <td class="px-5 py-4">
+                  <div class="flex items-center justify-end gap-1">
+                    <a href={`/blog/${p.slug}`} aria-label="View" class="inline-flex h-8 w-8 items-center justify-center rounded-[8px] border border-line text-muted transition-colors hover:bg-surface-subtle hover:text-ink">
+                      <Icon name="eye" size={15} />
+                    </a>
+                    <button type="button" aria-label="Edit" class="inline-flex h-8 w-8 items-center justify-center rounded-[8px] border border-line text-muted transition-colors hover:bg-surface-subtle hover:text-ink">
+                      <Icon name="edit" size={15} />
+                    </button>
+                    <button type="button" aria-label="Delete" class="inline-flex h-8 w-8 items-center justify-center rounded-[8px] border border-line text-muted transition-colors hover:bg-surface-subtle hover:text-ink">
+                      <Icon name="trash" size={15} />
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</AdminLayout>

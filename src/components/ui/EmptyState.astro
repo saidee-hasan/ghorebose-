@@ -1,0 +1,38 @@
+---
+import Icon from "./Icon.astro";
+
+interface Props {
+  icon?: string;
+  title: string;
+  description?: string;
+  class?: string;
+  compact?: boolean;
+}
+
+const {
+  icon = "search",
+  title,
+  description,
+  class: className = "",
+  compact = false,
+} = Astro.props;
+
+const cls = [
+  "flex flex-col items-center justify-center rounded-[16px] border border-dashed border-line bg-surface-subtle text-center",
+  compact ? "px-6 py-10" : "px-6 py-16",
+  className,
+]
+  .filter(Boolean)
+  .join(" ");
+---
+
+<div class={cls}>
+  <span
+    class="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-full border border-line bg-white text-muted"
+  >
+    <Icon name={icon} size={22} />
+  </span>
+  <h3 class="text-base font-bold text-ink">{title}</h3>
+  {description && <p class="mt-1.5 max-w-sm text-sm text-muted">{description}</p>}
+  <slot />
+</div>

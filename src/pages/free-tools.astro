@@ -1,0 +1,79 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import Navbar from "@/components/layout/Navbar.astro";
+import Footer from "@/components/layout/Footer.astro";
+import Breadcrumbs from "@/components/ui/Breadcrumbs.astro";
+import SectionHeading from "@/components/ui/SectionHeading.astro";
+import ToolCard from "@/components/marketplace/ToolCard.astro";
+import Button from "@/components/ui/Button.astro";
+import Icon from "@/components/ui/Icon.astro";
+import { getFreeTools, tools } from "@/data/tools";
+
+const free = getFreeTools();
+const categoriesCovered = new Set(free.map((t) => t.category)).size;
+---
+
+<BaseLayout
+  title="Free AI Tools"
+  description="Genuinely free AI tools you can use today — no payment required. Image generation, chat assistants, developer APIs and more."
+>
+  <Navbar active="free-tools" />
+
+  <main id="main" class="flex-1">
+    <div class="border-b border-line bg-surface-subtle">
+      <div class="container-page py-10 sm:py-12">
+        <Breadcrumbs
+          items={[{ label: "Home", href: "/" }, { label: "Free Tools" }]}
+        />
+        <div class="mt-5 flex flex-wrap items-end justify-between gap-6">
+          <div class="max-w-2xl">
+            <SectionHeading
+              eyebrow="No payment required"
+              title="Free AI Tools"
+              description="Start using AI today with tools that are free to access. Upgrade to a paid plan whenever you need more power."
+            />
+          </div>
+          <div class="flex gap-4">
+            <div class="text-center">
+              <p class="font-display text-2xl font-extrabold text-ink">{free.length}</p>
+              <p class="text-xs text-muted">free tools</p>
+            </div>
+            <div class="text-center">
+              <p class="font-display text-2xl font-extrabold text-ink">{categoriesCovered}</p>
+              <p class="text-xs text-muted">categories</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-page py-6 sm:py-10">
+      <div class="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-3 xl:grid-cols-4">
+        {free.map((tool) => <ToolCard tool={tool} />)}
+      </div>
+
+      <div
+        class="mt-14 flex flex-col items-center justify-between gap-6 rounded-[20px] border border-line bg-surface-subtle p-8 text-center sm:flex-row sm:text-left"
+      >
+        <div class="flex items-center gap-4">
+          <span class="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-[14px] bg-accent text-white">
+            <Icon name="sparkles" size={22} />
+          </span>
+          <div>
+            <h2 class="font-display text-lg font-bold text-ink">
+              Ready for premium features?
+            </h2>
+            <p class="mt-1 text-sm text-muted">
+              Unlock the full {tools.length}-tool catalog with local payments.
+            </p>
+          </div>
+        </div>
+        <Button href="/tools" size="lg" iconRight="arrow-right">
+          Explore all tools
+        </Button>
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</BaseLayout>

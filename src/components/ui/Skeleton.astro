@@ -1,0 +1,21 @@
+---
+interface Props {
+  variant?: "line" | "text" | "card" | "circle" | "button";
+  class?: string;
+  width?: string;
+}
+
+const { variant = "line", class: className = "", width } = Astro.props;
+
+const variants: Record<string, string> = {
+  line: "h-4 rounded-md",
+  text: "h-3 rounded-md",
+  card: "h-56 rounded-[16px]",
+  circle: "h-12 w-12 rounded-full",
+  button: "h-11 rounded-[10px]",
+};
+
+const cls = ["skeleton", variants[variant], className].filter(Boolean).join(" ");
+---
+
+<div class={cls} style={width ? `width:${width}` : undefined}></div>

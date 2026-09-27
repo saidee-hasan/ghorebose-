@@ -1,0 +1,110 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+import Navbar from "@/components/layout/Navbar.astro";
+import Footer from "@/components/layout/Footer.astro";
+import Icon from "@/components/ui/Icon.astro";
+
+interface Props {
+  title: string;
+  active?: string;
+  heading?: string;
+  description?: string;
+}
+
+const { title, active, heading, description } = Astro.props;
+
+const nav = [
+  { key: "dashboard", label: "Dashboard", href: "/dashboard", icon: "grid" },
+  { key: "orders", label: "My Orders", href: "/dashboard/orders", icon: "package" },
+  { key: "purchased", label: "Purchased Tools", href: "/dashboard/purchased", icon: "key" },
+  { key: "subscriptions", label: "Active Subscriptions", href: "/dashboard/subscriptions", icon: "refresh" },
+  { key: "payments", label: "Payment History", href: "/dashboard/payments", icon: "credit-card" },
+  { key: "profile", label: "Profile", href: "/dashboard/profile", icon: "user" },
+  { key: "settings", label: "Settings", href: "/dashboard/settings", icon: "settings" },
+];
+---
+
+<BaseLayout title={title} bodyClass="bg-surface-subtle">
+  <Navbar auth="user" />
+  <main id="main" class="flex-1 bg-surface-subtle">
+    <div class="container-page py-6 sm:py-8">
+      <div class="lg:grid lg:grid-cols-[240px_minmax(0,1fr)] lg:gap-8">
+        <aside class="hidden lg:block">
+          <div class="sticky top-24 space-y-1 rounded-[16px] border border-line bg-white p-3 shadow-xs">
+            {
+              nav.map((item) => (
+                <a
+                  href={item.href}
+                  aria-current={active === item.key ? "page" : undefined}
+                  class:list={[
+                    "flex items-center gap-3 rounded-[10px] px-3 py-2.5 text-sm font-semibold transition-colors",
+                    active === item.key
+                      ? "bg-ink text-white"
+                      : "text-muted-strong hover:bg-surface-subtle hover:text-ink",
+                  ]}
+                >
+                  <Icon name={item.icon} size={18} />
+                  {item.label}
+                </a>
+              ))
+            }
+            <div class="!mt-3 border-t border-line pt-3">
+              <a
+                href="/login"
+                class="flex items-center gap-3 rounded-[10px] px-3 py-2.5 text-sm font-semibold text-muted-strong transition-colors hover:bg-surface-subtle hover:text-ink"
+              >
+                <Icon name="logout" size={18} />
+                Logout
+              </a>
+            </div>
+          </div>
+        </aside>
+
+        <div class="min-w-0">
+          <!-- Mobile nav -->
+          <nav
+            class="no-scrollbar -mx-4 mb-5 flex gap-2 overflow-x-auto border-b border-line px-4 pb-3 lg:hidden"
+            aria-label="Dashboard"
+          >
+            {
+              nav.map((item) => (
+                <a
+                  href={item.href}
+                  aria-current={active === item.key ? "page" : undefined}
+                  class:list={[
+                    "inline-flex shrink-0 items-center gap-2 rounded-full border px-3.5 py-2 text-[13px] font-semibold transition-colors",
+                    active === item.key
+                      ? "border-ink bg-ink text-white"
+                      : "border-line bg-white text-muted-strong",
+                  ]}
+                >
+                  <Icon name={item.icon} size={15} />
+                  {item.label}
+                </a>
+              ))
+            }
+          </nav>
+
+          {
+            heading && (
+              <div class="mb-6 flex flex-wrap items-end justify-between gap-4">
+                <div>
+                  <h1 class="font-display text-2xl font-extrabold tracking-tight text-ink">
+                    {heading}
+                  </h1>
+                  {description && (
+                    <p class="mt-1 text-sm text-muted">{description}</p>
+                  )}
+                </div>
+                <slot name="actions" />
+              </div>
+            )
+          }
+
+          <slot />
+        </div>
+      </div>
+    </div>
+  </main>
+  <Footer />
+</BaseLayout>

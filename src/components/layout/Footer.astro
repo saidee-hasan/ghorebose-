@@ -1,0 +1,97 @@
+---
+import Icon from "@/components/ui/Icon.astro";
+
+const year = new Date().getFullYear();
+
+const columns = [
+  {
+    title: "এআই টুলস",
+    links: [
+      { label: "সব টুলস", href: "/tools" },
+      { label: "জনপ্রিয় টুলস", href: "/tools?sort=popular" },
+      { label: "ফ্রি টুলস", href: "/free-tools" },
+    ],
+  },
+  {
+    title: "সহায়তা ও গাইড",
+    links: [
+      { label: "পেমেন্ট নির্দেশিকা", href: "/payment-help" },
+      { label: "হেল্প সেন্টার", href: "/help" },
+      { label: "আমাদের সম্পর্কে", href: "/about" },
+      { label: "যোগাযোগ করুন", href: "/contact" },
+    ],
+  },
+  {
+    title: "পলিসি ও শর্তাবলী",
+    links: [
+      { label: "রিফান্ড পলিসি", href: "/refund-policy" },
+      { label: "ব্যবহারের শর্তাবলী", href: "/terms" },
+      { label: "গোপনীয়তা নীতি", href: "/privacy" },
+    ],
+  },
+];
+---
+
+<footer class="mt-auto border-t border-line bg-white">
+  <div class="container-page py-12">
+    <div class="grid gap-10 sm:grid-cols-2 lg:grid-cols-5">
+      <!-- Brand & Info Column -->
+      <div class="sm:col-span-2 lg:col-span-2">
+        <a
+          href="/"
+          class="font-display text-2xl font-extrabold tracking-tight text-ink"
+        >
+          ghorebose<span class="text-accent">.com</span>
+        </a>
+        <p class="mt-3 max-w-sm text-sm leading-relaxed text-muted font-bangla">
+          বাংলাদেশের শিক্ষার্থী, ফ্রিল্যান্সার ও ডেভেলপারদের জন্য বিকাশ ও নগদে সেরা প্রিমিয়াম এআই টুলস কেনার নির্ভরযোগ্য প্ল্যাটফর্ম।
+        </p>
+
+        <!-- Accepted Payment Methods -->
+        <div class="mt-5 flex items-center gap-2 text-xs font-semibold text-muted-strong font-bangla">
+          <span class="text-xs text-muted font-medium">পেমেন্ট মেথড:</span>
+          <span class="rounded bg-surface-muted px-2 py-0.5 border border-line text-ink">bKash</span>
+          <span class="rounded bg-surface-muted px-2 py-0.5 border border-line text-ink">Nagad</span>
+          <span class="rounded bg-surface-muted px-2 py-0.5 border border-line text-ink">Rocket</span>
+          <span class="rounded bg-surface-muted px-2 py-0.5 border border-line text-ink">Upay</span>
+        </div>
+
+        <p class="mt-4 text-xs text-muted font-bangla">
+          হেল্পলাইন: <a href="https://wa.me/8801712345678" target="_blank" rel="noopener noreferrer" class="font-bold text-accent hover:underline">01712-345678 (WhatsApp)</a>
+        </p>
+      </div>
+
+      <!-- Links Columns -->
+      {
+        columns.map((col) => (
+          <div>
+            <h3 class="font-bangla text-xs sm:text-sm font-bold uppercase tracking-wider text-ink">
+              {col.title}
+            </h3>
+            <ul class="mt-4 space-y-2.5">
+              {col.links.map((l) => (
+                <li>
+                  <a
+                    href={l.href}
+                    class="font-bangla text-xs sm:text-sm text-muted transition-colors hover:text-accent"
+                  >
+                    {l.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))
+      }
+    </div>
+
+    <!-- Bottom Copyright -->
+    <div
+      class="mt-10 flex flex-col items-center justify-between gap-3 border-t border-line pt-6 text-xs text-muted sm:flex-row font-bangla"
+    >
+      <p>© {year} ghorebose.com (ঘরে বসে) • সর্বস্বত্ব সংরক্ষিত।</p>
+      <p class="text-muted/80">Made with ❤️ for Bangladesh</p>
+    </div>
+  </div>
+</footer>
+
